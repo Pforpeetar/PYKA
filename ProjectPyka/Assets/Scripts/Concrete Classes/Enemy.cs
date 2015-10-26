@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Entity : MonoBehaviour {
+public class Enemy : Entity {
 
 	// Use this for initialization
 	void Start () {
@@ -10,6 +10,6 @@ public class Entity : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		EntityUpdate ();
 	}
 }
