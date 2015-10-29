@@ -16,8 +16,8 @@ public class SpreadProjectile : ProjectileMovement {
 		//get position relative to camera
 		Vector3 dir = (Input.mousePosition - sp).normalized; 
 		//subtract target position and current position to get vector
-		//clone1.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed, dir.y * speed, 0); 
-		/*
+		clone1.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed, dir.y * speed); 
+
 		if ((dir.x < 0 && dir.y > 0) || (dir.x > 0 && dir.y < 0)) {
 			clone2.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed + strayFactor, dir.y * speed + strayFactor, 0); 
 			clone3.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed - strayFactor, dir.y * speed - strayFactor, 0); 
@@ -25,18 +25,19 @@ public class SpreadProjectile : ProjectileMovement {
 		if ((dir.x > 0 && dir.y > 0) || (dir.x < 0 && dir.y < 0)) {
 			clone2.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed + strayFactor, dir.y * speed - strayFactor, 0); 
 			clone3.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed - strayFactor, dir.y * speed + strayFactor, 0); 
-		}*/
+		}
+
 		/*float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-		clone2.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed + Mathf.Cos(angle), 
-		                                                            dir.y * speed + Mathf.Cos(angle), 0); 
-		clone3.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed - Mathf.Cos(angle), 
-		                                                            dir.y * speed - Mathf.Cos(angle), 0); */
+		clone2.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed + Mathf.Tan(angle+15), 
+		                                                            dir.y * speed + Mathf.Tan(angle+15), 0); 
+		clone3.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed + Mathf.Tan(angle-15), 
+		                                                            dir.y * speed + Mathf.Tan(angle-15), 0); */
 		//Debug.Log ("Angle: " + angle);
 
-		clone1.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed + Random.Range(-Maxspread, Maxspread), (Random.Range(-Maxspread, Maxspread) + dir.y) * speed, 0);
+		/*clone1.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed + Random.Range(-Maxspread, Maxspread), (Random.Range(-Maxspread, Maxspread) + dir.y) * speed, 0);
 		clone2.GetComponent<Rigidbody2D> ().velocity = new Vector3 ((Random.Range(-Maxspread, Maxspread) + dir.x) * speed, (Random.Range(-Maxspread, Maxspread) + dir.y) * speed, 0); 
 		clone3.GetComponent<Rigidbody2D> ().velocity = new Vector3 ((Random.Range(-Maxspread, Maxspread) + dir.x) * speed, (Random.Range(-Maxspread, Maxspread) + dir.y) * speed, 0);
-
+		*/
 		//Debug.Log ("Direction: " + direction);
 		//Debug.Log ("Dir: " + dir);
 		//set velocity of cloned object so it moves towards target along calculated vector
