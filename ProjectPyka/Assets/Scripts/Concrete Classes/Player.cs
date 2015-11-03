@@ -11,7 +11,7 @@ public class Player : Entity {
 	// Update is called once per frame
 	void Update () {
 		EntityUpdate ();
-		rigidBody.velocity = new Vector2 (Input.GetAxis("Horizontal")*movementSpeed, Input.GetAxis("Vertical")*movementSpeed);
+		r.velocity = new Vector2 (Input.GetAxis("Horizontal")*movementSpeed, Input.GetAxis("Vertical")*movementSpeed);
 
 		if (Input.GetMouseButton (0) && (wH.pM.hitTime + wH.pM.shotCooldown < Time.time)) {
 			wH.createProjectile();

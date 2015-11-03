@@ -1,15 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy : Entity {
+public abstract class Enemy : Entity {
+	public int level = 1;
+	public int scoreBounty = 10;
+	protected Transform target;
 
 	// Use this for initialization
 	void Start () {
-	
+		EnemyStart ();
+	}
+
+	protected void EnemyStart() {
+		EntityStart ();
+		target = Utilities.getPlayerTransform ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		EnemyUpdate ();
+	}
+
+	protected void EnemyUpdate() {
 		EntityUpdate ();
 	}
+
+	public abstract void EnemyMovement();
 }

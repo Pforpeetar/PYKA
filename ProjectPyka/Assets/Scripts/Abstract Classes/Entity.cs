@@ -6,14 +6,14 @@ public abstract class Entity : MonoBehaviour {
 	public float maxHealth = 100;
 	public float movementSpeed = 10;
 	private bool deathState = false;
-	protected Rigidbody2D rigidBody;
+	protected Rigidbody2D r;
 	// Use this for initialization
 	void Start () {
 		EntityStart ();
 	}
 
 	protected void EntityStart() {
-		rigidBody = GetComponent<Rigidbody2D> ();
+		r = GetComponent<Rigidbody2D> ();
 	}
 	// Update is called once per frame
 	void Update () {

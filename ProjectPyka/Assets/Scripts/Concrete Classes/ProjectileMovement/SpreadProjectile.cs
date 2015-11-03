@@ -18,6 +18,7 @@ public class SpreadProjectile : ProjectileMovement {
 		//subtract target position and current position to get vector
 		clone1.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed, dir.y * speed); 
 
+
 		if ((dir.x < 0 && dir.y > 0) || (dir.x > 0 && dir.y < 0)) {
 			clone2.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed + strayFactor, dir.y * speed + strayFactor, 0); 
 			clone3.GetComponent<Rigidbody2D> ().velocity = new Vector3 (dir.x * speed - strayFactor, dir.y * speed - strayFactor, 0); 
