@@ -2,7 +2,9 @@
 using System.Collections;
 
 public class Player : Entity {
-	public ProjectileMovement pM;
+	public WeaponHandler wH;
+
+	private int weaponIndex = 0;
 	// Use this for initialization
 	void Start () {
 		EntityStart ();
@@ -13,9 +15,16 @@ public class Player : Entity {
 		EntityUpdate ();
 		r.velocity = new Vector2 (Input.GetAxis("Horizontal")*movementSpeed, Input.GetAxis("Vertical")*movementSpeed);
 
-		if (Input.GetMouseButton (0) && (pM.hitTime + pM.shotCooldown < Time.time)) {
-			pM.movement();
-			pM.hitTime = Time.time;
+		if (Input.GetMouseButton (0) && (wH.pM[weaponIndex].hitTime + wH.pM[weaponIndex].shotCooldown < Time.time)) {
+			wH.createProjectile(weaponIndex);
+			//pM.hitTime = Time.time;
+		}
+
+		if (Input.GetMouseButtonDown (1)) {
+			weaponIndex++;
+			if (weaponIndex >= wH.pM.Count) {
+				weaponIndex = 0;
+			}
 		}
 	}
 
