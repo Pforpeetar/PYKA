@@ -2,10 +2,11 @@
 using System.Collections;
 
 public class DestroyOnCollision : ProjectileProperty {
-
+	public float damage = 10;
+	public float lifepanAfterCollision = 0.2f;
 	public override void property() {
-		e.health -= 10;
-		Destroy (gameObject, 0.2f);
+		e.health -= damage;
+		Destroy (gameObject, lifepanAfterCollision);
 	}
 
 	void OnCollisionEnter2D(Collision2D collInfo) {

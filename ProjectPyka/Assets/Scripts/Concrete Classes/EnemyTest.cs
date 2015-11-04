@@ -6,7 +6,8 @@ public class EnemyTest : Enemy {
 	private float Xdif;
 	private float Ydif;
 	private Vector3 playerTransform; 
-
+	public float collisionDamage = 10;
+	public float knockback = 5000;
 	// Use this for initialization
 	void Start () {
 		EnemyStart ();
@@ -45,6 +46,21 @@ public class EnemyTest : Enemy {
 		if (r.velocity.y < -maxSpeed) {
 			r.velocity = new Vector3(r.velocity.y, -maxSpeed, 0);
 		}*/
-		Chasing ();
+		if (target != null) {
+			Chasing ();
+		} else {
+			r.velocity = new Vector2(0, 0);
+		}
+	}
+
+	void OnCollisionEnter2D(Collision2D coll) {
+		if (coll.gameObject.CompareTag ("Player")) {
+			coll.gameObject.GetComponent<Player>().health -= collisionDamage;
+			float verticalPush = coll.gameObject.transform.position.y - transform.position.y;
+			float horizontalPush = coll.gameObject.transform.position.x - transform.position.x;
+
+			coll.gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(horizontalPush, verticalPush) * knockback);
+			GetComponent<Rigidbody2D>().AddForce(new Vector2(-horizontalPush, -verticalPush) * knockback);
+		}
 	}
 }
