@@ -8,6 +8,7 @@ public class EnemyTest : Enemy {
 	private Vector3 playerTransform; 
 	public float collisionDamage = 10;
 	public float knockback = 5000;
+	public float stutterFactor = 500;
 	// Use this for initialization
 	void Start () {
 		EnemyStart ();
@@ -26,6 +27,7 @@ public class EnemyTest : Enemy {
 		
 		Playerdirection = new Vector2 (Xdif, Ydif);
 		r.velocity = (Playerdirection.normalized * movementSpeed);
+		r.AddForce(new Vector2(Random.Range(-stutterFactor, stutterFactor), Random.Range(-stutterFactor, stutterFactor)));
 	}
 
 	public override void EnemyMovement ()
