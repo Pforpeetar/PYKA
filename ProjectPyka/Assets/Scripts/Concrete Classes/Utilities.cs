@@ -1,16 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Utilities : MonoBehaviour {
+public static class Utilities {
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+	public static Transform getPlayerTransform() {
+		return GameObject.Find("Player").gameObject.transform;
 	}
 }
 

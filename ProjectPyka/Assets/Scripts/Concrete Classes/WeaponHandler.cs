@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class WeaponHandler : MonoBehaviour {
-	public ProjectileMovement pM;
-
-	public void createProjectile() {
-		pM.movement ();
-		pM.hitTime = Time.time;
+	public List<ProjectileMovement> pM;
+	public void createProjectile(int currentIndex) {
+		pM[currentIndex].movement();
+		pM[currentIndex].hitTime = Time.time;
 	}
 }
