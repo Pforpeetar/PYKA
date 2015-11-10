@@ -20,16 +20,17 @@ public class GameManager : MonoBehaviour {
 		maxEnemyDifficulty = 10;
 		minSpawn = 1;
 		maxSpawn = 100;
+		LevelBegin (difficulty);
 	}
 
 	void LevelBegin(int currLevel) {
 		tempSpawnedDifficulty = 0;
-		Random rnd = new Random();
 		int tempDiff;
 		while (tempSpawnedDifficulty <= difficulty) {
-			tempDiff = rnd.Next (minEnemyDifficulty, maxEnemyDifficulty);
+			//tempDiff = Random.Range (minEnemyDifficulty, maxEnemyDifficulty);
 			//create enemy of that diff
-			tempSpawnedDifficulty += tempDiff;
+			Instantiate(tempEnemy);
+			tempSpawnedDifficulty++;
 		}
 	}
 	
