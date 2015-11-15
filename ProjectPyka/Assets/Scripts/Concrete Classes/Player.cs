@@ -79,7 +79,10 @@ public class Player : Entity {
 		
 		if (Input.GetMouseButtonDown (1)) {
 			weaponIndex++;
-			state = WeaponState.Spread;
+			if (weaponIndex == 1) 
+				state = WeaponState.Spread;
+			if (weaponIndex == 2) 
+				state = WeaponState.Missle;
 			if (weaponIndex >= wH.pM.Count) {
 				state = WeaponState.Pistol;
 				weaponIndex = 0;
