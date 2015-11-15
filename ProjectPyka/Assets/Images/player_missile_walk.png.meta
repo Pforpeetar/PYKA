@@ -1,9 +1,13 @@
 fileFormatVersion: 2
 guid: b9f2b889979b49f40ab51504d5aad855
-timeCreated: 1447303403
+timeCreated: 1447573637
 licenseType: Free
 TextureImporter:
-  fileIDToRecycleName: {}
+  fileIDToRecycleName:
+    21300000: player_missile_walk_0
+    21300002: player_missile_walk_1
+    21300004: player_missile_walk_2
+    21300006: player_missile_walk_3
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -37,7 +41,7 @@ TextureImporter:
   lightmap: 0
   rGBM: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -48,7 +52,47 @@ TextureImporter:
   textureType: 8
   buildTargetSettings: []
   spriteSheet:
-    sprites: []
+    sprites:
+    - name: player_missile_walk_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 48
+        height: 72
+      alignment: 9
+      pivot: {x: .5, y: .602306783}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: player_missile_walk_1
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 48
+        height: 72
+      alignment: 9
+      pivot: {x: .49409771, y: .606241703}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: player_missile_walk_2
+      rect:
+        serializedVersion: 2
+        x: 96
+        y: 0
+        width: 48
+        height: 72
+      alignment: 9
+      pivot: {x: .5, y: .602306783}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: player_missile_walk_3
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 0
+        width: 48
+        height: 72
+      alignment: 9
+      pivot: {x: .494098037, y: .602306783}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
   assetBundleName: 
