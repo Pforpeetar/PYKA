@@ -18,6 +18,15 @@ public class EnemyTest : Enemy {
 	void Update () {
 		EnemyUpdate ();
 		EnemyMovement ();
+
+		Vector3 targetPos = Camera.main.WorldToScreenPoint (target.transform.position);
+		
+		Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
+		targetPos.x = targetPos.x - objectPos.x;
+		targetPos.y = targetPos.y - objectPos.y;
+		
+		float angle = Mathf.Atan2(targetPos.y, targetPos.x) * Mathf.Rad2Deg;
+		transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle+270));
 	}
 
 	void Chasing ()

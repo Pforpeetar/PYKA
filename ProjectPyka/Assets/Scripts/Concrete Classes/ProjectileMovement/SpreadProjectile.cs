@@ -7,12 +7,15 @@ public class SpreadProjectile : ProjectileMovement {
 	public float bulletFactor = 1;
 	public override void movement ()
 	{
-		GameObject clone = (GameObject) Instantiate(bullet, transform.position, Quaternion.identity);  
-		//clones prefab
+
 		Vector3 sp = Camera.main.WorldToScreenPoint(transform.position); 
 		//get position relative to camera
 		Vector3 dir = (Input.mousePosition - sp).normalized; 
 		//subtract target position and current position to get vector
+
+		GameObject clone = (GameObject) Instantiate(bullet, transform.position + dir, Quaternion.identity);  
+		//clones prefab
+
 
 		float angle = Mathf.Atan2(dir.y, dir.x);
 
@@ -29,13 +32,14 @@ public class SpreadProjectile : ProjectileMovement {
 	}
 
 	private void createSpreadPair(float stray, float rand) {
-		GameObject clone1 = (GameObject) Instantiate(bullet, transform.position, Quaternion.identity);
-		GameObject clone2 = (GameObject) Instantiate(bullet, transform.position, Quaternion.identity); 
-		//clones prefab
 		Vector3 sp = Camera.main.WorldToScreenPoint(transform.position); 
 		//get position relative to camera
 		Vector3 dir = (Input.mousePosition - sp).normalized; 
 		//subtract target position and current position to get vector
+
+		GameObject clone1 = (GameObject) Instantiate(bullet, transform.position + dir, Quaternion.identity);
+		GameObject clone2 = (GameObject) Instantiate(bullet, transform.position + dir, Quaternion.identity); 
+		//clones prefab
 		float angle = Mathf.Atan2(dir.y, dir.x);
 		clone1.GetComponent<Rigidbody2D> ().velocity = 
 			new Vector3 (speed * Mathf.Cos(angle + strayFactor + 
