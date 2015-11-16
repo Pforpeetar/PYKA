@@ -9,7 +9,7 @@ public class HomingModule : MonoBehaviour {
 	public GameObject parent;
 
 	void Update() {
-		Debug.Log(GameObject.FindGameObjectWithTag(target.ToString()));
+		//Debug.Log(GameObject.FindGameObjectWithTag(target.ToString()));
 		if ((parent != null) && (GameObject.FindGameObjectWithTag(target.ToString()) != null)) {
 			if (findTarget() && targetTransform != null) {
 				Chasing (parent.GetComponent<Rigidbody2D> ());

@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class CameraFollow : MonoBehaviour {
-	public Transform target;
+	private Transform target;
 	// Use this for initialization
 	void Start () {
 	}

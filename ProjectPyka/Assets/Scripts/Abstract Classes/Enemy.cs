@@ -3,7 +3,6 @@ using System.Collections;
 
 public abstract class Enemy : Entity {
 	public int level = 1;
-	public int scoreBounty = 10;
 	protected Transform target;
 
 	// Use this for initialization

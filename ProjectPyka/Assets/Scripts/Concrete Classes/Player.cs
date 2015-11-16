@@ -7,9 +7,12 @@ public enum WeaponState {
 
 public class Player : Entity {
 	public WeaponHandler wH;
+	public float mana = 100;
+	public float maxMana = 100;
+	public GameObject lightning;
 	private Animator animator;
 	private int weaponIndex = 0;
-	WeaponState state = WeaponState.Pistol;
+	public WeaponState state = WeaponState.Pistol;
 	// Use this for initialization
 	void Start () {
 		EntityStart ();
@@ -27,6 +30,10 @@ public class Player : Entity {
 			r.velocity = new Vector2(maxMovementSpeed, r.velocity.y);
 		} if (r.velocity.y > maxMovementSpeed) {
 			r.velocity =  new Vector2(r.velocity.x, maxMovementSpeed);
+		}
+		mana += 5 * Time.deltaTime;
+		if (mana >= maxMana) {
+			mana = maxMana;
 		}
 	}
 
@@ -94,6 +101,21 @@ public class Player : Entity {
 				weaponIndex = 0;
 			}
 		}
+
+		if (Input.GetKey (KeyCode.F) && mana >= 10) {
+
+			mana -= 30 * Time.deltaTime;
+			if (mana >= 10) {
+				lightning.SetActive (true);
+			}
+			if (mana <= 0) {
+				mana = 0;
+			}
+		} else {
+			lightning.SetActive (false);
+		}
+
+
 	}
 
 	void rotateCharacterToCursor() {

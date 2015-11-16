@@ -8,6 +8,7 @@ public class Entity : MonoBehaviour {
 	public float movementSpeed = 10;
 	public float maxMovementSpeed = 25;
 	public float deathCounter = 0.5f;
+	public int scoreBounty = 10;
 	public SpriteRenderer healthBar; //Health bar sprite to be used
 
 	public Material defMat;
@@ -34,7 +35,7 @@ public class Entity : MonoBehaviour {
 		
 		if (hitTime + 0.1f >= Time.time)
 		{
-			Debug.Log("HIT");
+			//Debug.Log("HIT");
 			GetComponent<SpriteRenderer>().material = hitMat;
 		}
 	}
@@ -83,6 +84,7 @@ public class Entity : MonoBehaviour {
 		if (!deathState) { //check to see if they are already in death state
 			if (health <= 0) {
 				deathState = true;
+				Utilities.score += scoreBounty;
 				Destroy(gameObject, deathCounter);
 				//gameObject.collider2D.enabled = false;
 			}
