@@ -48,7 +48,7 @@ public class EnemyTest : Enemy {
 
 	void OnCollisionEnter2D(Collision2D coll) {
 		if (coll.gameObject.CompareTag ("Player")) {
-			coll.gameObject.GetComponent<Player>().health -= collisionDamage;
+			coll.gameObject.GetComponent<Player>().damageEntity(collisionDamage);
 			float verticalPush = coll.gameObject.transform.position.y - transform.position.y;
 			float horizontalPush = coll.gameObject.transform.position.x - transform.position.x;
 
