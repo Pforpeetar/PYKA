@@ -25,8 +25,12 @@ public class EnemyTest : Enemy {
 			targetPos.x = targetPos.x - objectPos.x;
 			targetPos.y = targetPos.y - objectPos.y;
 			if (rotate) {
-			float angle = Mathf.Atan2 (targetPos.y, targetPos.x) * Mathf.Rad2Deg;
-			transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angle + 270));
+				float angle = Mathf.Atan2 (targetPos.y, targetPos.x) * Mathf.Rad2Deg;
+				transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angle + 270));
+			}
+		} else {
+			if (Utilities.getPlayerTransform() != null) {
+				target = Utilities.getPlayerTransform();
 			}
 		}
 	}
