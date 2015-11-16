@@ -2,7 +2,6 @@
 using System.Collections;
 
 public class HomingProjectile : ProjectileMovement {
-	private GameObject target = null;
 	public override void movement ()
 	{
 		Vector3 sp = Camera.main.WorldToScreenPoint(transform.position); 

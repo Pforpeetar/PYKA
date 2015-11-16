@@ -4,7 +4,10 @@ using System.Collections;
 public static class Utilities {
 
 	public static Transform getPlayerTransform() {
-		return GameObject.Find("Player").gameObject.transform;
+		if (GameObject.FindGameObjectWithTag ("Player") != null) {
+			return GameObject.FindGameObjectWithTag ("Player").gameObject.transform;
+		}
+		return null;
 	}
 }
 
