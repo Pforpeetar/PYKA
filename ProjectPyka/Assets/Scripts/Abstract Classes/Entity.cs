@@ -5,6 +5,7 @@ public abstract class Entity : MonoBehaviour {
 	public float health = 100;
 	public float maxHealth = 100;
 	public float movementSpeed = 10;
+	public float deathCounter = 0.5f;
 
 	public SpriteRenderer healthBar; //Health bar sprite to be used
 	protected Vector3 healthVector; //Vector of health bar
@@ -48,7 +49,7 @@ public abstract class Entity : MonoBehaviour {
 		if (!deathState) { //check to see if they are already in death state
 			if (health <= 0) {
 				deathState = true;
-				Destroy(gameObject, 1);
+				Destroy(gameObject, deathCounter);
 				//gameObject.collider2D.enabled = false;
 			}
 		}
