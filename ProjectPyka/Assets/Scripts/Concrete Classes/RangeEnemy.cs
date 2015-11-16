@@ -29,6 +29,7 @@ public class RangeEnemy : Enemy {
 		
 		float angle = Mathf.Atan2(targetPos.y, targetPos.x) * Mathf.Rad2Deg;
 		transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle+270));
+		rangedUpdate ();
 	}
 
 	public override void EnemyMovement ()
@@ -38,11 +39,21 @@ public class RangeEnemy : Enemy {
 
 	void rangedUpdate() {
 		playerTransform = GameObject.FindGameObjectWithTag ("Player").gameObject.transform;
+		Vector3 distance = playerTransform.position - transform.position;
+		Debug.Log("X: " + distance.x);
+		Debug.Log("Y: " + distance.y);
+		if (Mathf.Abs (distance.x) < 5  && Mathf.Abs(distance.y) < 5) {
+			playerInSight = true;
+
+		} else {
+			playerInSight = false;
+		}
 		if (playerInSight == true && canFire ()) {
 			//Debug.Log("stun: " + stunned);
 			//Debug.Log("IN SIGHT!");
 			rangedAttack ();
 		}
+
 	}
 	
 	private bool canFire()
@@ -64,22 +75,20 @@ public class RangeEnemy : Enemy {
 		if (refBullet == null) return;
 		GameObject clonedesu = (GameObject) Instantiate(refBullet, transform.position, Quaternion.identity);  
 		projectileTrajectory (clonedesu);
-		//Debug.Log(cloneVelocity);
-		Physics2D.IgnoreCollision (clonedesu.GetComponent<Collider2D>(), GetComponent<Collider2D>());
 		Destroy (clonedesu,2);
 	}
 	
 	Vector3 projectileTrajectory (GameObject clone)
 	{
-		float Xdif = target.position.x - transform.position.x;
-		float Ydif = target.position.y - transform.position.y;
 		Vector2 Playerdirection;
-		Vector3 playerTransform; 
+		float Xdif = playerTransform.position.x - transform.position.x;
+		float Ydif = playerTransform.position.y - transform.position.y;
 
-		Xdif = playerTransform.x - clone.transform.position.x;
-		Ydif = playerTransform.y - clone.transform.position.y;
 		Playerdirection = new Vector2 (Xdif, Ydif);
 		clone.GetComponent<Rigidbody2D>().velocity = (Playerdirection.normalized * 20);
+		float angle = Mathf.Atan2(playerTransform.position.y, playerTransform.position.x) * Mathf.Rad2Deg;
+		clone.transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle-90));
+
 		return refBullet.GetComponent<Rigidbody2D>().velocity;
 	}
 
