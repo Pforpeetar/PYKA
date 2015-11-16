@@ -109,11 +109,11 @@ public class GameManager : MonoBehaviour {
 	//text for the score
 	void OnGUI() {
 		if (isVictorious) {
-			if (GUI.Button (new Rect(Screen.width/2, Screen.height/2, Screen.width/4, Screen.height/20),"End Game")) {
+			if (GUI.Button (new Rect(Screen.width/2 - 100, Screen.height/2, Screen.width/4, Screen.height/20),"End Game")) {
 				//print ("Clicked End Game");
 				Application.Quit();
 			}
-			if (GUI.Button (new Rect(Screen.width/2, Screen.height/2.5f, Screen.width/4, Screen.height/20),"Next Level")) {
+			if (GUI.Button (new Rect(Screen.width/2 - 100, Screen.height/2.5f, Screen.width/4, Screen.height/20),"Next Level")) {
 				//print ("Clicked End Game");
 				Time.timeScale = 1;
 				Utilities.difficulty += 5;
