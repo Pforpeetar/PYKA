@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class Entity : MonoBehaviour {
+public class Entity : MonoBehaviour {
 	public float health = 100;
 	public float maxHealth = 100;
 	public float hitDelay = 0.3f;
@@ -48,8 +48,10 @@ public abstract class Entity : MonoBehaviour {
 
 	protected void EntityStart() {
 		r = GetComponent<Rigidbody2D> ();
-		healthVector = healthBar.transform.localScale;
-		healthScale = health / maxHealth;
+		if (healthBar != null) {
+			healthVector = healthBar.transform.localScale;
+			healthScale = health / maxHealth;
+		}
 	}
 	// Update is called once per frame
 	void Update () {
@@ -71,8 +73,10 @@ public abstract class Entity : MonoBehaviour {
 		if (health <= 0) {
 			health = 0;
 		}
-		healthScale = health / maxHealth;
-		healthBar.transform.localScale = new Vector3 (healthVector.x * healthScale, 1, 1);
+		if (healthBar != null) {
+			healthScale = health / maxHealth;
+			healthBar.transform.localScale = new Vector3 (healthVector.x * healthScale, 1, 1);
+		}
 	}
 
 	protected void deathCheck() {

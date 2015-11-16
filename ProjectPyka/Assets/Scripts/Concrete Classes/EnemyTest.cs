@@ -4,8 +4,10 @@ using System.Collections;
 public class EnemyTest : Enemy {
 
 	public float collisionDamage = 10;
-	public float knockback = 5000;
+	public float knockback = 2000;
 	public float stutterFactor = 500;
+	public bool rotate = true;
+	public bool chaseTarget = true;
 	// Use this for initialization
 	void Start () {
 		EnemyStart ();
@@ -22,9 +24,10 @@ public class EnemyTest : Enemy {
 			Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
 			targetPos.x = targetPos.x - objectPos.x;
 			targetPos.y = targetPos.y - objectPos.y;
-		
+			if (rotate) {
 			float angle = Mathf.Atan2 (targetPos.y, targetPos.x) * Mathf.Rad2Deg;
 			transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angle + 270));
+			}
 		}
 	}
 
@@ -39,7 +42,7 @@ public class EnemyTest : Enemy {
 
 	public override void EnemyMovement ()
 	{
-		if (target != null) {
+		if (target != null && chaseTarget) {
 			Chasing ();
 		} else {
 			r.velocity = new Vector2(0, 0);
