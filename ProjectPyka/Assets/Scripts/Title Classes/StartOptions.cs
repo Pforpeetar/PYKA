@@ -33,7 +33,5 @@ public class StartOptions : MonoBehaviour {
 			Application.LoadLevel (2);
 		}
 
-		public void KHA() {
-			
-		}
+		public void 
 }
