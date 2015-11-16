@@ -32,6 +32,4 @@ public class StartOptions : MonoBehaviour {
 			//Load the selected scene, by scene index number in build settings
 			Application.LoadLevel (2);
 		}
-
-		public void 
 }
