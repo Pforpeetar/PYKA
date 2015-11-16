@@ -4,10 +4,15 @@ using System.Collections;
 public abstract class Entity : MonoBehaviour {
 	public float health = 100;
 	public float maxHealth = 100;
+	public float hitDelay = 0.3f;
 	public float movementSpeed = 10;
+	public float maxMovementSpeed = 25;
 	public float deathCounter = 0.5f;
-
 	public SpriteRenderer healthBar; //Health bar sprite to be used
+
+	public Material defMat;
+	public Material hitMat;
+
 	protected Vector3 healthVector; //Vector of health bar
 	protected float healthScale; //Scale health bar to size of health container.
 	protected float hitTime;
@@ -17,6 +22,28 @@ public abstract class Entity : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		EntityStart ();
+	}
+
+	protected void playerMaterial() {
+		/*
+		 * call to update after getting hit so that we go back to default material,
+		 */ 
+		if ((hitTime + 0.1f < Time.time)) {
+			GetComponent<SpriteRenderer>().material = defMat;
+		}
+		
+		if (hitTime + 0.1f >= Time.time)
+		{
+			Debug.Log("HIT");
+			GetComponent<SpriteRenderer>().material = hitMat;
+		}
+	}
+
+	public void damageEntity(float damage) {
+		if (hitTime + hitDelay < Time.time) {
+			hitTime = Time.time;
+			health -= damage;
+		}
 	}
 
 	protected void EntityStart() {
@@ -32,6 +59,9 @@ public abstract class Entity : MonoBehaviour {
 	protected void EntityUpdate() {
 		HealthUpdate ();
 		deathCheck ();
+		if (hitMat != null && defMat != null) {
+			playerMaterial ();
+		}
 	}
 
 	protected void HealthUpdate() {
