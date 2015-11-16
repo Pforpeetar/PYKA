@@ -22,6 +22,12 @@ public class Player : Entity {
 		inputCheck ();
 		animationCheck ();
 		rotateCharacterToCursor ();
+
+		if (r.velocity.x > maxMovementSpeed) {
+			r.velocity = new Vector2(maxMovementSpeed, r.velocity.y);
+		} if (r.velocity.y > maxMovementSpeed) {
+			r.velocity =  new Vector2(r.velocity.x, maxMovementSpeed);
+		}
 	}
 
 	void animationCheck() {
@@ -71,7 +77,7 @@ public class Player : Entity {
 
 	void inputCheck() {
 		r.velocity = new Vector2 (Input.GetAxis("Horizontal")*movementSpeed, Input.GetAxis("Vertical")*movementSpeed);
-		
+
 		if (Input.GetMouseButton (0) && (wH.pM[weaponIndex].hitTime + wH.pM[weaponIndex].shotCooldown < Time.time)) {
 			wH.createProjectile(weaponIndex);
 			//pM.hitTime = Time.time;
