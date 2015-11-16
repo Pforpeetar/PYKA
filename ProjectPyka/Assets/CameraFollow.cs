@@ -9,9 +9,7 @@ public class CameraFollow : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Utilities.getPlayerTransform()) {
-			target = Utilities.getPlayerTransform();
-		}
+		target = GameObject.FindGameObjectWithTag ("Player").transform;
 		if (!target.Equals (null)) {
 			transform.position = new Vector3(target.transform.position.x, target.transform.position.y + 1, transform.position.z);
 		}

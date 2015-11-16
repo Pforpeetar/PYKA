@@ -13,9 +13,7 @@ public abstract class Enemy : Entity {
 
 	protected void EnemyStart() {
 		EntityStart ();
-		if (Utilities.getPlayerTransform() != null) {
-			target = Utilities.getPlayerTransform ();
-		}
+		target = Utilities.getPlayerTransform ();
 	}
 	
 	// Update is called once per frame

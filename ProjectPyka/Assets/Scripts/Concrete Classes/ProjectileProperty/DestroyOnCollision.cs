@@ -5,7 +5,7 @@ public class DestroyOnCollision : ProjectileProperty {
 	public float damage = 10;
 	public float lifepanAfterCollision = 0.2f;
 	public override void property() {
-		e.damageEntity(damage);
+		e.health -= damage;
 		Destroy (gameObject, lifepanAfterCollision);
 	}
 
