@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class StraightProjectile : ProjectileMovement {
-
+public class HomingProjectile : ProjectileMovement {
+	private GameObject target = null;
 	public override void movement ()
 	{
 		Vector3 sp = Camera.main.WorldToScreenPoint(transform.position); 
@@ -27,4 +27,6 @@ public class StraightProjectile : ProjectileMovement {
 		//set velocity of cloned object so it moves towards target along calculated vector
 		Destroy (clone, lifeSpan);
 	}
+
+
 }

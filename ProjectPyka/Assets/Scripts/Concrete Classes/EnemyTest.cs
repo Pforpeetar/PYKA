@@ -2,10 +2,7 @@
 using System.Collections;
 
 public class EnemyTest : Enemy {
-	private Vector2 Playerdirection;
-	private float Xdif;
-	private float Ydif;
-	private Vector3 playerTransform; 
+
 	public float collisionDamage = 10;
 	public float knockback = 5000;
 	public float stutterFactor = 500;
@@ -18,13 +15,24 @@ public class EnemyTest : Enemy {
 	void Update () {
 		EnemyUpdate ();
 		EnemyMovement ();
+
+		Vector3 targetPos = Camera.main.WorldToScreenPoint (target.transform.position);
+		
+		Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
+		targetPos.x = targetPos.x - objectPos.x;
+		targetPos.y = targetPos.y - objectPos.y;
+		
+		float angle = Mathf.Atan2(targetPos.y, targetPos.x) * Mathf.Rad2Deg;
+		transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle+270));
 	}
 
 	void Chasing ()
 	{
-		Xdif = target.position.x - transform.position.x;
-		Ydif = target.position.y - transform.position.y;
-		
+		float Xdif = target.position.x - transform.position.x;
+		float Ydif = target.position.y - transform.position.y;
+		Vector2 Playerdirection;
+		Vector3 playerTransform; 
+
 		Playerdirection = new Vector2 (Xdif, Ydif);
 		r.velocity = (Playerdirection.normalized * movementSpeed);
 		r.AddForce(new Vector2(Random.Range(-stutterFactor, stutterFactor), Random.Range(-stutterFactor, stutterFactor)));
