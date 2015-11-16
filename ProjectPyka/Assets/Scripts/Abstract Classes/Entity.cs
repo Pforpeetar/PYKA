@@ -5,7 +5,6 @@ public abstract class Entity : MonoBehaviour {
 	public float health = 100;
 	public float maxHealth = 100;
 	public float movementSpeed = 10;
-	public float maxMovementSpeed = 25;
 	public float deathCounter = 0.5f;
 
 	public SpriteRenderer healthBar; //Health bar sprite to be used

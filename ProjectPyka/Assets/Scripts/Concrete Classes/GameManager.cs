@@ -69,12 +69,13 @@ public class GameManager : MonoBehaviour {
 			//       b) Restart
 			DestroyAllEnemies();
 			Time.timeScale = 0;
+			Application.LoadLevel(3);
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		//Debug.Log (instantiatedPlayer);
+		Debug.Log (instantiatedPlayer);
 		if (instantiatedPlayer.Equals(null)) {
 			isVictorious = false;
 			LevelEnd (isVictorious);

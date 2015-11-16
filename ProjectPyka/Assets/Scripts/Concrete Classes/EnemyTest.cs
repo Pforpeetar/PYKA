@@ -13,32 +13,49 @@ public class EnemyTest : Enemy {
 	
 	// Update is called once per frame
 	void Update () {
-		if (target != null) {
-			EnemyUpdate ();
-			EnemyMovement ();
+		EnemyUpdate ();
+		EnemyMovement ();
 
-			Vector3 targetPos = Camera.main.WorldToScreenPoint (target.transform.position);
+		Vector3 targetPos = Camera.main.WorldToScreenPoint (target.transform.position);
 		
-			Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
-			targetPos.x = targetPos.x - objectPos.x;
-			targetPos.y = targetPos.y - objectPos.y;
+		Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
+		targetPos.x = targetPos.x - objectPos.x;
+		targetPos.y = targetPos.y - objectPos.y;
 		
-			float angle = Mathf.Atan2 (targetPos.y, targetPos.x) * Mathf.Rad2Deg;
-			transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angle + 270));
-		}
+		float angle = Mathf.Atan2(targetPos.y, targetPos.x) * Mathf.Rad2Deg;
+		transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle+270));
 	}
 
 	void Chasing ()
 	{
 		float Xdif = target.position.x - transform.position.x;
 		float Ydif = target.position.y - transform.position.y;
-		Vector2 Playerdirection = new Vector2 (Xdif, Ydif);
+		Vector2 Playerdirection;
+		Vector3 playerTransform; 
+
+		Playerdirection = new Vector2 (Xdif, Ydif);
 		r.velocity = (Playerdirection.normalized * movementSpeed);
 		r.AddForce(new Vector2(Random.Range(-stutterFactor, stutterFactor), Random.Range(-stutterFactor, stutterFactor)));
 	}
 
 	public override void EnemyMovement ()
 	{
+		/*
+		int maxSpeed = 5;
+		r.AddForce ((target.transform.position - transform.position) * movementSpeed);
+		
+		if (r.velocity.x > maxSpeed) {
+			r.velocity = new Vector3(maxSpeed, r.velocity.y, 0);
+		}
+		if (r.velocity.y > maxSpeed) {
+			r.velocity = new Vector3(r.velocity.x, 5, 0);
+		}
+		if (r.velocity.x < -maxSpeed) {
+			r.velocity = new Vector3(-maxSpeed, r.velocity.y, 0);
+		}
+		if (r.velocity.y < -maxSpeed) {
+			r.velocity = new Vector3(r.velocity.y, -maxSpeed, 0);
+		}*/
 		if (target != null) {
 			Chasing ();
 		} else {
