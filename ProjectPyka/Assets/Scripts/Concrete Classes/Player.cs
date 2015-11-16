@@ -17,6 +17,7 @@ public class Player : Entity {
 	void Start () {
 		EntityStart ();
 		animator = GetComponent<Animator> ();
+		health = Utilities.currentHealth;
 	}
 	
 	// Update is called once per frame

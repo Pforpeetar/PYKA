@@ -3,43 +3,44 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
-	public int difficulty;
 	public int tempSpawnedDifficulty;
-	public int maxEnemyDifficulty;
-	public int minEnemyDifficulty;
-	public int currLevel;
-	public int maxSpawn;
-	public int minSpawn;
-	public int score;
 	public bool isVictorious = false;
 	public GameObject instantiatedPlayer;
 	public GameObject playerPrefab;
-	public GameObject enemy;
+	public GameObject[] enemyType;
 	public GameObject startPos;
 	//public List<GameObject> enemyTypeList = new List<GameObject>();
 	public List<GameObject> enemySpawnLocations = new List<GameObject> ();
-	public List<GameObject> levelEnemyList = new List<GameObject>();
+	private List<GameObject> levelEnemyList = new List<GameObject>();
 
 	// Use this for initialization
 	void Start () {
 		instantiatedPlayer = GameObject.FindGameObjectWithTag ("Player");
-		minEnemyDifficulty = 1;
-		maxEnemyDifficulty = 10;
-		minSpawn = 1;
-		maxSpawn = 100;
-		LevelBegin (difficulty);
+		tempSpawnedDifficulty = 0;
+		LevelBegin (Utilities.difficulty);
+
 	}
 
 	void LevelBegin(int currLevel) {
 		tempSpawnedDifficulty = 0;
+		Utilities.enemyCount = 0;
 		int tempDiff;
 		GameObject tempEnemy;
-		while (tempSpawnedDifficulty <= difficulty) {
+
+		while (tempSpawnedDifficulty < Utilities.difficulty) {
 			//tempDiff = Random.Range (minEnemyDifficulty, maxEnemyDifficulty);
 			//create enemy of that diff
-			tempEnemy = Instantiate (enemy);
+			int i = Random.Range(0, enemyType.Length);
+			int s = Random.Range(0, enemySpawnLocations.Count);
+			int enemyLevel = enemyType[i].GetComponent<Enemy>().level;
+			if (enemyLevel <= Utilities.maxEnemyDifficulty && ((tempSpawnedDifficulty + enemyLevel) <= Utilities.difficulty)) {
+			tempSpawnedDifficulty += enemyLevel;
+			tempEnemy = (GameObject) Instantiate (enemyType[i], enemySpawnLocations[s].transform.position, Quaternion.identity);
 			levelEnemyList.Add (tempEnemy);
+			Utilities.enemyCount++;
 			tempSpawnedDifficulty++;
+			}
+
 		}
 	}
 
@@ -59,7 +60,9 @@ public class GameManager : MonoBehaviour {
 			//    2) Click to Load new level
 			//    3) LevelsSurvived++
 			DestroyAllEnemies();
-			Time.timeScale = 0;
+			Utilities.currentHealth = instantiatedPlayer.GetComponent<Player>().health;
+			Time.timeScale = 1;
+
 		} else {
 			// do Lose Stuff:
 			//    1) Lose Screen
@@ -68,29 +71,56 @@ public class GameManager : MonoBehaviour {
 			//       a) Main Menu
 			//       b) Restart
 			DestroyAllEnemies();
-			Time.timeScale = 0;
+			Utilities.difficulty = 5;
+			Utilities.currentHealth = playerPrefab.GetComponent<Player>().maxHealth;
+			Utilities.currLevel = 1;
+			Utilities.minEnemyDifficulty = 1;
+			Utilities.maxEnemyDifficulty = 1;
+			Utilities.minSpawn = 1;
+			Utilities.maxSpawn = 100;
+			Time.timeScale = 1;
+			Application.LoadLevel(3);
 		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		Debug.Log (Utilities.maxEnemyDifficulty);
 		//Debug.Log (instantiatedPlayer);
 		if (instantiatedPlayer.Equals(null)) {
 			isVictorious = false;
 			LevelEnd (isVictorious);
 		}
-		if (levelEnemyList.Count <= 0) {
+		if (Utilities.enemyCount <= 0) {
 			isVictorious = true;
 			LevelEnd (isVictorious);
 		}
 		if (instantiatedPlayer.Equals(null) 
 		    && Input.GetKey(KeyCode.N)) {
 			Time.timeScale = 1;
-			difficulty = 10;
+			Utilities.difficulty = 10;
 			instantiatedPlayer = (GameObject) Instantiate (playerPrefab, 
 			                     						   startPos.transform.position, 
 			                                  			   Quaternion.identity);
-			LevelBegin(difficulty);
+			LevelBegin(Utilities.difficulty);
+		}
+	}
+
+	//text for the score
+	void OnGUI() {
+		if (isVictorious) {
+			if (GUI.Button (new Rect(Screen.width/2, Screen.height/2, Screen.width/4, Screen.height/20),"End Game")) {
+				//print ("Clicked End Game");
+				Application.Quit();
+			}
+			if (GUI.Button (new Rect(Screen.width/2, Screen.height/2.5f, Screen.width/4, Screen.height/20),"Next Level")) {
+				//print ("Clicked End Game");
+				Time.timeScale = 1;
+				Utilities.difficulty += 5;
+				Utilities.currLevel++;
+				Utilities.maxEnemyDifficulty += 5;
+				Application.LoadLevel(2);
+			}
 		}
 	}
 }

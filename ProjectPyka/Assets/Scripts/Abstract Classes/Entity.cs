@@ -9,6 +9,8 @@ public class Entity : MonoBehaviour {
 	public float maxMovementSpeed = 25;
 	public float deathCounter = 0.5f;
 	public int scoreBounty = 10;
+	public GameObject healthDrop;
+	public int dropRate = 10;
 	public SpriteRenderer healthBar; //Health bar sprite to be used
 
 	public Material defMat;
@@ -85,6 +87,12 @@ public class Entity : MonoBehaviour {
 			if (health <= 0) {
 				deathState = true;
 				Utilities.score += scoreBounty;
+				if (gameObject.CompareTag("Enemy")) {
+					Utilities.enemyCount -= 1;
+					if (Random.Range(0, 100) < dropRate && healthDrop != null) {
+						Instantiate(healthDrop, transform.position, Quaternion.identity);
+					}
+				}
 				Destroy(gameObject, deathCounter);
 				//gameObject.collider2D.enabled = false;
 			}
