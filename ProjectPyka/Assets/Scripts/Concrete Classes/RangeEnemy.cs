@@ -9,6 +9,7 @@ public class RangeEnemy : Enemy {
 	public float COOLDOWNTIME = 1f;
 	private float timeSinceLastFired = 0f;
 	private Transform playerTransform;
+	private bool playerInSight = false;
 	// Use this for initialization
 	void Start () {
 		EnemyStart ();
@@ -17,20 +18,18 @@ public class RangeEnemy : Enemy {
 	
 	// Update is called once per frame
 	void Update () {
-		if (target != null) {
-			EnemyUpdate ();
-			EnemyMovement ();
+		EnemyUpdate ();
+		EnemyMovement ();
 		
-			Vector3 targetPos = Camera.main.WorldToScreenPoint (target.transform.position);
+		Vector3 targetPos = Camera.main.WorldToScreenPoint (target.transform.position);
 		
-			Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
-			targetPos.x = targetPos.x - objectPos.x;
-			targetPos.y = targetPos.y - objectPos.y;
+		Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
+		targetPos.x = targetPos.x - objectPos.x;
+		targetPos.y = targetPos.y - objectPos.y;
 		
-			float angle = Mathf.Atan2 (targetPos.y, targetPos.x) * Mathf.Rad2Deg;
-			transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angle + 270));
-			rangedUpdate ();
-		}
+		float angle = Mathf.Atan2(targetPos.y, targetPos.x) * Mathf.Rad2Deg;
+		transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle+270));
+		rangedUpdate ();
 	}
 
 	public override void EnemyMovement ()
@@ -38,22 +37,23 @@ public class RangeEnemy : Enemy {
 		//Stationary
 	}
 
-	bool findTarget() {
+	void rangedUpdate() {
 		playerTransform = GameObject.FindGameObjectWithTag ("Player").gameObject.transform;
 		Vector3 distance = playerTransform.position - transform.position;
-		
+		Debug.Log("X: " + distance.x);
+		Debug.Log("Y: " + distance.y);
 		if (Mathf.Abs (distance.x) < 5  && Mathf.Abs(distance.y) < 5) {
-			return true;
+			playerInSight = true;
+
+		} else {
+			playerInSight = false;
 		}
-
-		return false;
-	}
-
-	void rangedUpdate() {
-
-		if (findTarget () && canFire ()) {
+		if (playerInSight == true && canFire ()) {
+			//Debug.Log("stun: " + stunned);
+			//Debug.Log("IN SIGHT!");
 			rangedAttack ();
 		}
+
 	}
 	
 	private bool canFire()
