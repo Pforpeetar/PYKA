@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Debug.Log (Utilities.maxEnemyDifficulty);
+		//Debug.Log (Utilities.maxEnemyDifficulty);
 		//Debug.Log (instantiatedPlayer);
 		if (instantiatedPlayer.Equals(null)) {
 			isVictorious = false;

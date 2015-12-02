@@ -20,7 +20,7 @@ public class Entity : MonoBehaviour {
 	protected float healthScale; //Scale health bar to size of health container.
 	protected float hitTime;
 
-	private bool deathState = false;
+	protected bool deathState = false;
 	protected Rigidbody2D r;
 	// Use this for initialization
 	void Start () {
@@ -82,7 +82,7 @@ public class Entity : MonoBehaviour {
 		}
 	}
 
-	protected void deathCheck() {
+	public virtual void deathCheck() {
 		if (!deathState) { //check to see if they are already in death state
 			if (health <= 0) {
 				deathState = true;
