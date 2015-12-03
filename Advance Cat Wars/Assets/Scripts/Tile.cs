@@ -2,15 +2,9 @@
 using System.Collections;
 
 public class Tile : MonoBehaviour {
+	public bool selected = false;
 	public bool MoveableOnto = true;
+	//public float defenseValue = 1;
 	public SpriteRenderer terrainSprite;
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+	public bool isVisible = false;
 }

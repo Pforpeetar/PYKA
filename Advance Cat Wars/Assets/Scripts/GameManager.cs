@@ -1,15 +1,26 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameManager : MonoBehaviour {
+public enum Owner {
+	Null, Player1, Player2};
 
-	// Use this for initialization
-	void Start () {
+public enum BuildingType {
+	HeadQuarter, Factory, Building};
+
+public static class GameManager {
+	public static Player[] playerArray;
+	public static Owner turn = Owner.Null;
 	
+	public static void startGame() {
+		turn = Owner.Player1;
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	public static void intermediateTurn() {
+		//This is a black screen before next players turn. 
+		turn = Owner.Null;
+	}
+
+	public static void startTurn() {
+
 	}
 }
