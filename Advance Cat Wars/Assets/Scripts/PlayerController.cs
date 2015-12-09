@@ -5,20 +5,28 @@ using System.Collections.Generic;
 public class PlayerController : MonoBehaviour {
 	public float rayCastScale = 1000f;
 	public LayerMask layerMask;
+	//Material tile/unit set to when selected
 	public Material selectedMaterial;
+	//Default sprite material
 	public Material defaultMaterial;
 
+	//Phases act like states. Certain options will be available depending on what state.
 	private bool movementPhase = false;
 	private bool attackPhase = false;
 	private bool movingCamera = false;
 
+	//Check to see if a unit or tile is currently selected.
 	private bool unitSelected = false;
 	private bool tileSelected = false;
 
+	//Current selected objects
 	private UnitPiece selectedUnit;
 	private Tile selectedTile;
 
+	//List of gameobjects to build a path for the unit piece to follow
 	private List<GameObject> path;
+
+	//Raycast to collide with object on mouse cursor.
 	private RaycastHit2D originRaycast;
 	private RaycastHit2D northRaycast;
 	private RaycastHit2D southRaycast;
@@ -38,11 +46,10 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		inputCheck ();
-
-
 	}
 
-	void inputCheck() {
+	//Fires a raycast from the mouse and returns data from any object it collides with.
+	void rayCastCheck() {
 		mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 		
 		Debug.DrawRay (new Vector3(mousePos.x, mousePos.y, -5), new Vector3 (0, 0, -1)); 
@@ -52,20 +59,25 @@ public class PlayerController : MonoBehaviour {
 			southRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y - 1, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
 			westRaycast = Physics2D.Raycast (new Vector3 (mousePos.x - 1, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
 			eastRaycast = Physics2D.Raycast (new Vector3 (mousePos.x + 1, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
-			//Debug.Log (mousePos);
-			if (originRaycast.collider) {
-				/*
-				Debug.Log("Origin:" + originRaycast.collider);
-				Debug.Log("North:" + northRaycast.collider);
-				Debug.Log("South:" + southRaycast.collider);
-				Debug.Log("West:" + westRaycast.collider);
-				Debug.Log("East:" + eastRaycast.collider);
-				*/
-			}
 		}
+	}
 
+	//Method to hold all player mouse inputs and their functionality.
+	void inputCheck() {
+		rayCastCheck ();
+
+		//Selecting logic
 		if (Input.GetMouseButton (0) && originRaycast.collider != null) {
-			selectCheck ();
+			if (originRaycast.collider.CompareTag ("UnitPiece")) {
+				selectedUnit = originRaycast.collider.gameObject.GetComponent<UnitPiece> ();
+				selectedUnit.selected = true;
+				selectedUnit.GetComponent<SpriteRenderer> ().material = selectedMaterial;
+				unitSelected = true;
+			} else if (selectedUnit != null) {
+				selectedUnit.selected = false;
+				selectedUnit.GetComponent<SpriteRenderer>().material = defaultMaterial;
+				unitSelected = false;
+			}
 		}
 
 		if (Input.GetMouseButton (1) && originRaycast.collider != null) {
@@ -78,7 +90,11 @@ public class PlayerController : MonoBehaviour {
 				selectedTile.GetComponent<SpriteRenderer>().material = defaultMaterial;
 			}
 		}
+
+
+		//Moving camera logic
 		Vector3 pos = transform.position;
+
 		if (Input.GetMouseButtonDown (1) && !unitSelected && !tileSelected) {
 			movingCamera = true;
 		}
@@ -92,19 +108,6 @@ public class PlayerController : MonoBehaviour {
 
 		if (Input.GetMouseButtonUp (1)) {
 			movingCamera = false;
-		}
-	}
-
-	void selectCheck() {
-		if (originRaycast.collider.CompareTag ("UnitPiece")) {
-			selectedUnit = originRaycast.collider.gameObject.GetComponent<UnitPiece> ();
-			selectedUnit.selected = true;
-			selectedUnit.GetComponent<SpriteRenderer> ().material = selectedMaterial;
-			unitSelected = true;
-		} else if (selectedUnit != null) {
-			selectedUnit.selected = false;
-			selectedUnit.GetComponent<SpriteRenderer>().material = defaultMaterial;
-			unitSelected = false;
 		}
 	}
 
