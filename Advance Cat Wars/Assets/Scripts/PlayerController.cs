@@ -38,10 +38,11 @@ public class PlayerController : MonoBehaviour {
 
 	//Raycast to collide with object on mouse cursor.
 	private RaycastHit2D originRaycast;
-	private RaycastHit2D northRaycast;
-	private RaycastHit2D southRaycast;
-	private RaycastHit2D westRaycast;
-	private RaycastHit2D eastRaycast;
+
+	//private RaycastHit2D northRaycast;
+	//private RaycastHit2D southRaycast;
+	//private RaycastHit2D westRaycast;
+	//private RaycastHit2D eastRaycast;
 
 	private Rigidbody2D r;
 	private int currentMovement = 0;
@@ -57,13 +58,14 @@ public class PlayerController : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		inputCheck ();
-		Debug.Log ("CurrentPlayer: " + GameManager.currentPlayer +  " OpposingPlayer: " + GameManager.opposingPlayer);
+
+		//Debug.Log ("CurrentPlayer: " + GameManager.currentPlayer +  " OpposingPlayer: " + GameManager.opposingPlayer);
 	}
 
 	//Method to hold all player mouse inputs and their functionality.
 	void inputCheck() {
 		rayCastCheck ();
-		Debug.Log ("Unit Selected: " + unitSelected);
+		//Debug.Log ("Unit Selected: " + unitSelected);
 		selectUnit ();
 		if (curUnitState == UnitState.Move) {
 			selectTile();
@@ -81,10 +83,10 @@ public class PlayerController : MonoBehaviour {
 		Debug.DrawRay (new Vector3(mousePos.x, mousePos.y, -5), new Vector3 (0, 0, -1)); 
 		if (Input.GetMouseButton (0) || Input.GetMouseButton(1)) {
 			originRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
-			northRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y + 1, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
-			southRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y - 1, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
-			westRaycast = Physics2D.Raycast (new Vector3 (mousePos.x - 1, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
-			eastRaycast = Physics2D.Raycast (new Vector3 (mousePos.x + 1, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
+			//northRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y + 1, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
+			//southRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y - 1, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
+			//westRaycast = Physics2D.Raycast (new Vector3 (mousePos.x - 1, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
+			//eastRaycast = Physics2D.Raycast (new Vector3 (mousePos.x + 1, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
 		}
 		if (originRaycast.collider != null && originRaycast.collider.CompareTag ("Tile")) {
 			selectedTile = originRaycast.collider.gameObject.GetComponent<Tile> ();
@@ -97,7 +99,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void selectEnemyUnit() {
-		if (Input.GetMouseButtonDown (0)) {
+		if (Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown(0)) {
 			if (originRaycast.collider != null && originRaycast.collider.CompareTag ("UnitPiece")) {
 				if (originRaycast.collider.gameObject.GetComponent<UnitPiece>().ownership.Equals(GameManager.opposingPlayer)) {
 					selectedEnemy = originRaycast.collider.gameObject.GetComponent<UnitPiece> ();
@@ -114,7 +116,7 @@ public class PlayerController : MonoBehaviour {
 
 	void selectUnit() {
 		//Selecting logic
-		if (Input.GetMouseButtonDown (0)) {
+		if (Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown(0)) {
 			//Debug.Log(originRaycast.collider);
 			if (selectedUnit != null && selectedUnit.ownership.Equals(GameManager.currentPlayer) && !selectedUnit.finished) {
 				if(!unitSelected) {
@@ -122,7 +124,7 @@ public class PlayerController : MonoBehaviour {
 						selectedUnit.selected = true;
 						selectedUnit.GetComponent<SpriteRenderer> ().material = selectedMaterial;
 						unitSelected = true;
-						Debug.Log("Unit Selected. ");
+						//Debug.Log("Unit Selected. ");
 					} 
 				}
 			}
@@ -130,7 +132,7 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void selectTile() {
-		if (Input.GetMouseButtonDown (1)) {
+		if (Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown(0)) {
 			if (!tileSelected 
 			    && selectedTile.MoveableOnto 
 			    && checkAdjacentRaycast (selectedUnit.transform.position, selectedTile.transform.position)) {
@@ -165,7 +167,7 @@ public class PlayerController : MonoBehaviour {
 		//Moving camera logic
 		Vector3 pos = transform.position;
 		
-		if (Input.GetMouseButtonDown (1) && !unitSelected && !tileSelected) {
+		if ((Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown(0)) && !unitSelected && !tileSelected) {
 			movingCamera = true;
 		}
 		
@@ -182,8 +184,10 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	void reset() {
-		selectedUnit.finished = true;
-		selectedUnit.GetComponent<SpriteRenderer> ().material = finishMaterial;
+		if (selectedUnit != null) {
+			selectedUnit.finished = true;
+			selectedUnit.GetComponent<SpriteRenderer> ().material = finishMaterial;
+		}
 		unitSelected = false;
 		tileSelected = false;
 		curUnitState = UnitState.Start;
@@ -200,10 +204,11 @@ public class PlayerController : MonoBehaviour {
 		}
 		reset ();
 		foreach (GameObject u in GameObject.FindGameObjectsWithTag("UnitPiece")) {
-			u.GetComponent<UnitPiece>().finished = false;
-			u.GetComponent<SpriteRenderer>().material = defaultMaterial;
+			if (u.GetComponent<UnitPiece>() != null) {
+				u.GetComponent<UnitPiece>().finished = false;
+				u.GetComponent<SpriteRenderer>().material = defaultMaterial;
+			}
 		}
-		selectedUnit.finished = false;	
 		curUnitState = UnitState.Start;
 	}
 
@@ -279,6 +284,8 @@ public class PlayerController : MonoBehaviour {
 
 		if (GUI.Button (new Rect(0, 0, buttonWidth, buttonHeight), "End Turn")) {
 			switchTurn();
+			GameManager.updateUnits();
+			GameManager.updateFactories();
 		}
 
 
