@@ -7,6 +7,7 @@ public enum UnitState {
 }
 
 public class PlayerController : MonoBehaviour {
+	public GUIStyle style;
 	public float rayCastScale = 1000f;
 	public LayerMask layerMask;
 	//Material tile/unit set to when selected
@@ -19,9 +20,8 @@ public class PlayerController : MonoBehaviour {
 	private UnitState curUnitState = UnitState.Start;
 
 	//Phases act like states. Certain options will be available depending on what state.
-	private bool startPhase = true;
-	private bool movementPhase = false;
-	private bool attackPhase = false;
+	//private bool movementPhase = false;
+	//private bool attackPhase = false;
 	private bool movingCamera = false;
 
 	//Check to see if a unit or tile is currently selected.
@@ -63,9 +63,8 @@ public class PlayerController : MonoBehaviour {
 	//Method to hold all player mouse inputs and their functionality.
 	void inputCheck() {
 		rayCastCheck ();
-		if (startPhase) {
-			selectUnit ();
-		}
+		Debug.Log ("Unit Selected: " + unitSelected);
+		selectUnit ();
 		if (curUnitState == UnitState.Move) {
 			selectTile();
 		}
@@ -90,7 +89,7 @@ public class PlayerController : MonoBehaviour {
 		if (originRaycast.collider != null && originRaycast.collider.CompareTag ("Tile")) {
 			selectedTile = originRaycast.collider.gameObject.GetComponent<Tile> ();
 		}
-		if (originRaycast.collider != null && originRaycast.collider.CompareTag ("UnitPiece")) {
+		if (originRaycast.collider != null && originRaycast.collider.CompareTag ("UnitPiece") && !unitSelected) {
 			if (originRaycast.collider.gameObject.GetComponent<UnitPiece>().ownership.Equals(GameManager.currentPlayer)) {
 				selectedUnit = originRaycast.collider.gameObject.GetComponent<UnitPiece> ();
 			}
@@ -187,8 +186,6 @@ public class PlayerController : MonoBehaviour {
 		selectedUnit.GetComponent<SpriteRenderer> ().material = finishMaterial;
 		unitSelected = false;
 		tileSelected = false;
-		startPhase = true;
-		attackPhase = false;
 		curUnitState = UnitState.Start;
 	}
 
@@ -221,62 +218,66 @@ public class PlayerController : MonoBehaviour {
 
 	//text for the score
 	void OnGUI() {
-		Vector3 pos = Camera.main.WorldToScreenPoint(Input.mousePosition);
+		Vector3 pos = new Vector3(0, 75);
+		float buttonWidth = 150f;
+		float buttonHeight = 25f;
 
+		
+		GUI.Box (new Rect (0, 25, buttonWidth, buttonHeight), "TURN: " + GameManager.currentPlayer.ToString());
 		//make 4 buttons
 		//make methods to toggle visiblity
 		if (unitSelected) {
-			pos = Camera.main.WorldToScreenPoint (selectedUnit.transform.position);
-			GUI.Label (new Rect (pos.x, pos.y - 25, 100, 100), "Health: " + selectedUnit.unitSize);
+			GUI.Box (new Rect (pos.x, pos.y - 25, buttonWidth, buttonHeight), "HEALTH: " + selectedUnit.unitSize);
 
 			if (curUnitState == UnitState.Start) {
-				if (GUI.Button (new Rect (pos.x, pos.y, Screen.width / 4, Screen.height / 20), "Start Move")) {
+				if (GUI.Button (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Start Move")) {
 					curUnitState = UnitState.Move;
 				}
-				if (GUI.Button (new Rect (pos.x, pos.y + 25, Screen.width / 4, Screen.height / 20), "Cancel")) {
+				if (GUI.Button (new Rect (pos.x, pos.y + 25, buttonWidth, buttonHeight), "Cancel")) {
 					unitSelected = false;
 					selectedUnit.GetComponent<SpriteRenderer> ().material = defaultMaterial;
 					selectedUnit = null;
 				}
 			}
 			if (curUnitState == UnitState.Move) {
-				if (GUI.Button (new Rect (pos.x, pos.y, Screen.width / 4, Screen.height / 20), "Next: Attack")) {
+				if (GUI.Button (new Rect (pos.x, pos.y + 25, buttonWidth, buttonHeight), "Next: Attack")) {
 					curUnitState = UnitState.Attack;
 				}
 
 				if (tileSelected) {
-					if (GUI.Button (new Rect (pos.x, pos.y + 25, Screen.width / 4, Screen.height / 20), "Okay")) {
+					if (GUI.Button (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Confirm")) {
 						selectedUnit.transform.position = new Vector3(selectedTile.transform.position.x, selectedTile.transform.position.y, selectedUnit.transform.position.z);
 						curUnitState = UnitState.Attack;
 						toggleTile();
 					}
+				} else {
+					GUI.Box (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Select tile to move to");
 				}
 
 			}
 			if (curUnitState == UnitState.Attack) {
-				if (GUI.Button (new Rect (pos.x, pos.y, Screen.width / 4, Screen.height / 20), "Next: End")) {
+				if (GUI.Button (new Rect (pos.x, pos.y + 25, buttonWidth, buttonHeight), "Next: End")) {
 					curUnitState = UnitState.End;
 				}
 				if (enemySelected) {
-					if (GUI.Button (new Rect (pos.x, pos.y + 25, Screen.width / 4, Screen.height / 20), "Okay")) {
+					if (GUI.Button (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Confirm")) {
 						selectedEnemy.unitSize -= 5;
 						curUnitState = UnitState.End;
 						toggleEnemy();
 					}
+				} else {
+					GUI.Box (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Select enemy to attack");
 				}
 			}
 
 			if (curUnitState == UnitState.End) {
-				if (GUI.Button (new Rect (pos.x, pos.y, Screen.width / 4, Screen.height / 20), "End Unit Turn")) {
+				if (GUI.Button (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "End Unit Turn")) {
 					reset ();
 				}
 			}
 		}
 
-		GUI.Label (new Rect (Screen.width/2, Screen.height/12, 100, 100), "Turn: " + GameManager.currentPlayer.ToString());
-
-
-		if (GUI.Button (new Rect(0, 0, Screen.width/4, Screen.height/20), "End Turn")) {
+		if (GUI.Button (new Rect(0, 0, buttonWidth, buttonHeight), "End Turn")) {
 			switchTurn();
 		}
 
