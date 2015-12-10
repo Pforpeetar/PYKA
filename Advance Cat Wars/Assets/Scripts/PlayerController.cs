@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour {
 	private RaycastHit2D eastRaycast;
 
 	private Rigidbody2D r;
+	private int currentMovement = 0;
 	public float cameraSpeed = 1f;
 
 	Vector3 mousePos = new Vector3(0, 0, 0);
@@ -65,47 +66,62 @@ public class PlayerController : MonoBehaviour {
 	//Method to hold all player mouse inputs and their functionality.
 	void inputCheck() {
 		rayCastCheck ();
+		selectUnit ();
+		if (movementPhase && currentMovement < selectedUnit.movementRange) {
+			selectTile ();
+		}
+		cameraMovement ();
+	}
 
+	void selectUnit() {
 		//Selecting logic
-		if (Input.GetMouseButton (0) && originRaycast.collider != null) {
-			if (originRaycast.collider.CompareTag ("UnitPiece")) {
+		if (Input.GetMouseButton (0) && !unitSelected) {
+			Debug.Log(originRaycast.collider);
+			if (originRaycast.collider != null && originRaycast.collider.CompareTag ("UnitPiece")) {
 				selectedUnit = originRaycast.collider.gameObject.GetComponent<UnitPiece> ();
 				selectedUnit.selected = true;
 				selectedUnit.GetComponent<SpriteRenderer> ().material = selectedMaterial;
 				unitSelected = true;
-			} else if (selectedUnit != null) {
+			} 
+			else if (selectedUnit != null){
 				selectedUnit.selected = false;
 				selectedUnit.GetComponent<SpriteRenderer>().material = defaultMaterial;
 				unitSelected = false;
 			}
 		}
+	}
 
-		if (Input.GetMouseButton (1) && originRaycast.collider != null) {
-			if (originRaycast.collider.CompareTag("Tile")) {
+	void selectTile() {
+		if (Input.GetMouseButton (1)) {
+			if (originRaycast.collider.CompareTag("Tile") && originRaycast.collider != null) {
+				currentMovement++;
 				selectedTile = originRaycast.collider.gameObject.GetComponent<Tile>();
 				if (selectedTile != null) {
 					selectedTile.GetComponent<SpriteRenderer> ().material = selectedMaterial;
 				}
 			} else {
 				selectedTile.GetComponent<SpriteRenderer>().material = defaultMaterial;
+				tileSelected = false;
+				currentMovement--;
 			}
 		}
+	}
 
-
+	void cameraMovement() {
 		//Moving camera logic
 		Vector3 pos = transform.position;
-
+		
 		if (Input.GetMouseButtonDown (1) && !unitSelected && !tileSelected) {
 			movingCamera = true;
 		}
-
+		
 		if (movingCamera) {
-
+			
 			r.velocity = new Vector3 ((mousePos.x - pos.x) * cameraSpeed, (mousePos.y - pos.y) * cameraSpeed, 0);
 		} else {
 			r.velocity = new Vector3(0, 0, 0);
 		}
-
+		
 		if (Input.GetMouseButtonUp (1)) {
 			movingCamera = false;
 		}
@@ -130,7 +146,7 @@ public class PlayerController : MonoBehaviour {
 		}
 		if (movementPhase) {
 			Debug.Log("poop");
-			if (GUI.Button (new Rect(Screen.width/2 - 100, Screen.height/2, Screen.width/4, Screen.height/20), "Execute")) {
+			if (GUI.Button (new Rect(Camera.main.WorldToScreenPoint(selectedUnit.transform.position).x, Camera.main.WorldToScreenPoint(selectedUnit.transform.position).y, Screen.width/4, Screen.height/20), "Execute")) {
 				//print ("Clicked End Game");
 				movementPhase = false;
 			}

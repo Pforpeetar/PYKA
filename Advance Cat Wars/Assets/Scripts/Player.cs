@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class Player : MonoBehaviour {
 	//playerEnum used to determine what the current player turn is.
 	public Owner playerEnum; 
+
+	public int money = 100;
 	//unitPieces used to keep track of available pieces left on the board and to regenerate them if they're on a building.
 	//Maybe have two lists of pieces, one for player1 and another for player2
 	public List<UnitPiece> unitPieces = new List<UnitPiece>(); 
