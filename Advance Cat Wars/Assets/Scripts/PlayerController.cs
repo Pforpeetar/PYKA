@@ -2,6 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
+public enum UnitState {
+	Start, Move, Attack, End
+}
+
 public class PlayerController : MonoBehaviour {
 	public float rayCastScale = 1000f;
 	public LayerMask layerMask;
@@ -9,6 +13,8 @@ public class PlayerController : MonoBehaviour {
 	public Material selectedMaterial;
 	//Default sprite material
 	public Material defaultMaterial;
+
+	private UnitState curUnitState = UnitState.Start;
 
 	//Phases act like states. Certain options will be available depending on what state.
 	private bool startPhase = true;
@@ -100,7 +106,7 @@ public class PlayerController : MonoBehaviour {
 						selectedUnit.selected = true;
 						selectedUnit.GetComponent<SpriteRenderer> ().material = selectedMaterial;
 						unitSelected = true;
-						Debug.Log("Why god why. ");
+						Debug.Log("Unit Selected. ");
 					} 
 				}
 			}
@@ -109,7 +115,9 @@ public class PlayerController : MonoBehaviour {
 
 	void selectTile() {
 		if (Input.GetMouseButtonDown (1)) {
-			if (!tileSelected && selectedTile.MoveableOnto && checkAdjacentRaycast (selectedUnit.transform.position, selectedTile.transform.position)) {
+			if (!tileSelected 
+			    && selectedTile.MoveableOnto 
+			    && checkAdjacentRaycast (selectedUnit.transform.position, selectedTile.transform.position)) {
 				if (originRaycast.collider.CompareTag ("Tile") && originRaycast.collider != null) {
 					selectedTile.selected = true;
 					selectedTile.GetComponent<SpriteRenderer> ().material = selectedMaterial;
@@ -157,62 +165,99 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	void switchTurn() {
+		if (GameManager.currentPlayer.Equals(Owner.Player1)) {
+			GameManager.currentPlayer = Owner.Player2;
+			GameManager.opposingPlayer = Owner.Player1;
+		} 
+		else {
+			GameManager.currentPlayer = Owner.Player1;
+			GameManager.opposingPlayer = Owner.Player2;
+		}
+		unitSelected = false;
+		tileSelected = false;
+		startPhase = true;
+		attackPhase = false;
+		selectedUnit.finishedAttack = false;
+		selectedUnit.finishedMovement = false;
+		selectedUnit.GetComponent<SpriteRenderer> ().material = defaultMaterial;
+		movementPhase = false;
+		selectedUnit = null;
+		selectedTile = null;
+		curUnitState = UnitState.Start;
+	}
+
 	//text for the score
 	void OnGUI() {
 		Vector3 pos = Camera.main.WorldToScreenPoint(Input.mousePosition);
+
+		//make 4 buttons
+		//make methods to toggle visiblity
+		if (unitSelected) {
+			if (curUnitState == UnitState.Start) {
+				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2, Screen.width / 4, Screen.height / 20), "Start Turn")) {
+					curUnitState = UnitState.Move;
+				}
+			}
+			if (curUnitState == UnitState.Move) {
+				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2 + 25, Screen.width / 4, Screen.height / 20), "Start Move")) {
+					curUnitState = UnitState.Attack;
+				}
+			}
+			if (curUnitState == UnitState.Attack) {
+				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2 + 50, Screen.width / 4, Screen.height / 20), "Start Attack")) {
+					curUnitState = UnitState.End;
+				}
+			}
+
+			if (curUnitState == UnitState.End) {
+				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2 + 100, Screen.width / 4, Screen.height / 20), "End Unit Turn")) {
+					switchTurn();
+				}
+			}
+		}
+
 		if (selectedUnit != null) {
 			pos = Camera.main.WorldToScreenPoint (selectedUnit.transform.position);
 		}
 
 		GUI.Label (new Rect (Screen.width/2, Screen.height/12, 100, 100), "Turn: " + GameManager.currentPlayer.ToString());
 
+		/*
 		if (GUI.Button (new Rect(Screen.width / 1.25f, Screen.height / 1.25f, Screen.width/4, Screen.height/20),"EndTurn")) {
-			if (GameManager.currentPlayer.Equals(Owner.Player1)) {
-			GameManager.currentPlayer = Owner.Player2;
-			GameManager.opposingPlayer = Owner.Player1;
-			} 
-			else {
-				GameManager.currentPlayer = Owner.Player1;
-				GameManager.opposingPlayer = Owner.Player2;
-			}
-			unitSelected = false;
-			tileSelected = false;
-			startPhase = true;
-			attackPhase = false;
-			selectedUnit.finishedAttack = false;
-			selectedUnit.finishedMovement = false;
-			movementPhase = false;
-			selectedUnit = null;
-			selectedTile = null;
+
 		}
+
+
 
 		if (unitSelected) {
 			GUI.Label (new Rect (pos.x, pos.y - 25, 100, 100), "Health: " + selectedUnit.unitSize);
 			if (GUI.Button (new Rect(pos.x, pos.y + 50, Screen.width/4, Screen.height/20), "Cancel")) {
 				//print ("Clicked End Game");
-				selectedUnit.finishedAttack = true;
+				//selectedUnit.finishedAttack = true;
 				movementPhase = false;
 				attackPhase = false;
 				unitSelected = false;
 				tileSelected = false;
 				startPhase = true;
 				selectedUnit.GetComponent<SpriteRenderer>().material = defaultMaterial;
-				selectedTile.GetComponent<SpriteRenderer>().material = defaultMaterial;
+				//selectedTile.GetComponent<SpriteRenderer>().material = defaultMaterial;
 			}
 			if (!selectedUnit.finishedMovement) {
 				if (GUI.Button (new Rect(pos.x, pos.y, Screen.width/4, Screen.height/20),"Start Move")) {
 					movementPhase = true;
 					unitSelected = false;
 					startPhase = false;
+					attackPhase = true;
 					selectedUnit.finishedMovement = true;
 				}
 			}
 			if (!selectedUnit.finishedAttack) {
 				if (GUI.Button (new Rect(pos.x, pos.y + 25, Screen.width/4, Screen.height/20),"Start Attack")) {
-					attackPhase = true;
+					movementPhase = false;
 					unitSelected = false;
 					startPhase = false;
-					movementPhase = false;
+					attackPhase = true;
 					selectedUnit.finishedAttack = true;
 				}
 			}
@@ -223,6 +268,7 @@ public class PlayerController : MonoBehaviour {
 			if (selectedEnemy != null && checkAdjacentRaycast (selectedUnit.transform.position, selectedEnemy.transform.position)) {
 				if (GUI.Button (new Rect(pos.x, pos.y, Screen.width/4, Screen.height/20), "Execute")) {
 					//print ("Clicked End Game");
+					selectedUnit.finishedAttack = true;
 					movementPhase = false;
 					unitSelected = false;
 					tileSelected = false;
@@ -238,7 +284,7 @@ public class PlayerController : MonoBehaviour {
 			}
 			if (GUI.Button (new Rect(pos.x, pos.y + 50, Screen.width/4, Screen.height/20), "Cancel")) {
 				//print ("Clicked End Game");
-				selectedUnit.finishedAttack = true;
+				//selectedUnit.finishedAttack = true;
 				movementPhase = false;
 				attackPhase = true;
 				unitSelected = false;
@@ -253,6 +299,7 @@ public class PlayerController : MonoBehaviour {
 			if (tileSelected) {
 				if (GUI.Button (new Rect(pos.x, pos.y, Screen.width/4, Screen.height/20), "Execute")) {
 					//print ("Clicked End Game");
+					selectedUnit.finishedMovement = true;
 					movementPhase = false;
 					unitSelected = false;
 					tileSelected = false;
@@ -263,7 +310,7 @@ public class PlayerController : MonoBehaviour {
 				}
 				if (GUI.Button (new Rect(pos.x, pos.y + 50, Screen.width/4, Screen.height/20), "Cancel")) {
 					//print ("Clicked End Game");
-					selectedUnit.finishedMovement = true;
+					//selectedUnit.finishedMovement = true;
 					movementPhase = true;
 					attackPhase = false;
 					unitSelected = false;
@@ -275,8 +322,8 @@ public class PlayerController : MonoBehaviour {
 			}
 			if (GUI.Button (new Rect(pos.x, pos.y + 50, Screen.width/4, Screen.height/20), "Cancel")) {
 				//print ("Clicked End Game");
-				selectedUnit.finishedMovement = true;
-				movementPhase = false;
+				//selectedUnit.finishedMovement = true;
+				movementPhase = true;
 				attackPhase = false;
 				unitSelected = false;
 				tileSelected = false;
@@ -285,8 +332,10 @@ public class PlayerController : MonoBehaviour {
 				selectedTile.GetComponent<SpriteRenderer>().material = defaultMaterial;
 			}
 		}
+		*/
 	}
 
+	/* not used
 	void cancel(Vector3 pos) {
 		if (GUI.Button (new Rect(pos.x, pos.y + 50, Screen.width/4, Screen.height/20), "Cancel")) {
 			//print ("Clicked End Game");
@@ -299,6 +348,14 @@ public class PlayerController : MonoBehaviour {
 			selectedTile.GetComponent<SpriteRenderer>().material = defaultMaterial;
 		}
 	}
+	*/
 
+	void toggle(bool var) {
+		if (var) {
+			var = false;
+		} else {
+			var = true;
+		}
+	}
 
 }
