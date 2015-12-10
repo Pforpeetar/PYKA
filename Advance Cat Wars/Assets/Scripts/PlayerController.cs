@@ -220,27 +220,27 @@ public class PlayerController : MonoBehaviour {
 	void OnGUI() {
 		Vector3 pos = new Vector3(0, 75);
 		float buttonWidth = 150f;
-		float buttonHeight = 50f;
+		float buttonHeight = 25f;
 
 		
-		GUI.Label (new Rect (0, 25, 100, 100), "TURN: " + GameManager.currentPlayer.ToString(), style);
+		GUI.Box (new Rect (0, 25, buttonWidth, buttonHeight), "TURN: " + GameManager.currentPlayer.ToString());
 		//make 4 buttons
 		//make methods to toggle visiblity
 		if (unitSelected) {
-			GUI.Label (new Rect (pos.x, pos.y - 25, buttonWidth, buttonHeight), "HEALTH: " + selectedUnit.unitSize, style);
+			GUI.Box (new Rect (pos.x, pos.y - 25, buttonWidth, buttonHeight), "HEALTH: " + selectedUnit.unitSize);
 
 			if (curUnitState == UnitState.Start) {
 				if (GUI.Button (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Start Move")) {
 					curUnitState = UnitState.Move;
 				}
-				if (GUI.Button (new Rect (pos.x, pos.y + 50, buttonWidth, buttonHeight), "Cancel")) {
+				if (GUI.Button (new Rect (pos.x, pos.y + 25, buttonWidth, buttonHeight), "Cancel")) {
 					unitSelected = false;
 					selectedUnit.GetComponent<SpriteRenderer> ().material = defaultMaterial;
 					selectedUnit = null;
 				}
 			}
 			if (curUnitState == UnitState.Move) {
-				if (GUI.Button (new Rect (pos.x, pos.y + 50, buttonWidth, buttonHeight), "Next: Attack")) {
+				if (GUI.Button (new Rect (pos.x, pos.y + 25, buttonWidth, buttonHeight), "Next: Attack")) {
 					curUnitState = UnitState.Attack;
 				}
 
@@ -251,12 +251,12 @@ public class PlayerController : MonoBehaviour {
 						toggleTile();
 					}
 				} else {
-					GUI.Label (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Select tile to move to");
+					GUI.Box (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Select tile to move to");
 				}
 
 			}
 			if (curUnitState == UnitState.Attack) {
-				if (GUI.Button (new Rect (pos.x, pos.y + 50, buttonWidth, buttonHeight), "Next: End")) {
+				if (GUI.Button (new Rect (pos.x, pos.y + 25, buttonWidth, buttonHeight), "Next: End")) {
 					curUnitState = UnitState.End;
 				}
 				if (enemySelected) {
@@ -266,7 +266,7 @@ public class PlayerController : MonoBehaviour {
 						toggleEnemy();
 					}
 				} else {
-					GUI.Label (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Select enemy to attack");
+					GUI.Box (new Rect (pos.x, pos.y, buttonWidth, buttonHeight), "Select enemy to attack");
 				}
 			}
 
@@ -277,7 +277,7 @@ public class PlayerController : MonoBehaviour {
 			}
 		}
 
-		if (GUI.Button (new Rect(0, 0, Screen.width/4, Screen.height/20), "End Turn")) {
+		if (GUI.Button (new Rect(0, 0, buttonWidth, buttonHeight), "End Turn")) {
 			switchTurn();
 		}
 
