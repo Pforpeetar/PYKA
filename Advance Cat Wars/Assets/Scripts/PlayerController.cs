@@ -65,11 +65,9 @@ public class PlayerController : MonoBehaviour {
 	//Method to hold all player mouse inputs and their functionality.
 	void inputCheck() {
 		rayCastCheck ();
-<<<<<<< HEAD
-		Debug.Log ("Unit Selected: " + unitSelected);
-=======
+
 		//Debug.Log ("Unit Selected: " + unitSelected);
->>>>>>> refs/remotes/origin/master
+		//Debug.Log ("Unit Selected: " + unitSelected);
 		selectUnit ();
 		if (curUnitState == UnitState.Move) {
 			selectTile();
@@ -84,15 +82,15 @@ public class PlayerController : MonoBehaviour {
 	void rayCastCheck() {
 		mousePos = Camera.main.ScreenToWorldPoint (Input.mousePosition);
 		
-		Debug.DrawRay (new Vector3(mousePos.x, mousePos.y, -5), new Vector3 (0, 0, -1)); 
+		Debug.DrawRay (new Vector3(mousePos.x, mousePos.y, -7), new Vector3 (0, 0, 1)); 
 		if (Input.GetMouseButton (0) || Input.GetMouseButton(1)) {
-			originRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
+			originRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y, -7), new Vector3 (0, 0, 1), rayCastScale, layerMask);
 			//northRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y + 1, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
 			//southRaycast = Physics2D.Raycast (new Vector3 (mousePos.x, mousePos.y - 1, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
 			//westRaycast = Physics2D.Raycast (new Vector3 (mousePos.x - 1, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
 			//eastRaycast = Physics2D.Raycast (new Vector3 (mousePos.x + 1, mousePos.y, 0), new Vector3 (0, 0, -1), rayCastScale, layerMask);
 		}
-		if (originRaycast.collider != null && originRaycast.collider.CompareTag ("Tile")) {
+		if (originRaycast.collider != null && originRaycast.collider.CompareTag ("Tile") && !tileSelected) {
 			selectedTile = originRaycast.collider.gameObject.GetComponent<Tile> ();
 		}
 		if (originRaycast.collider != null && originRaycast.collider.CompareTag ("UnitPiece") && !unitSelected) {
@@ -137,6 +135,10 @@ public class PlayerController : MonoBehaviour {
 
 	void selectTile() {
 		if (Input.GetMouseButtonDown (1) || Input.GetMouseButtonDown(0)) {
+			Debug.Log (originRaycast.collider);
+			Debug.Log (tileSelected);
+			Debug.Log (selectedTile);
+			Debug.Log (checkAdjacentRaycast(selectedUnit.transform.position, selectedTile.transform.position));
 			if (!tileSelected 
 			    && selectedTile.MoveableOnto 
 			    && checkAdjacentRaycast (selectedUnit.transform.position, selectedTile.transform.position)) {
@@ -157,10 +159,10 @@ public class PlayerController : MonoBehaviour {
 		//Vector3 unitPos = selectedUnit.transform.position;
 		//Vector3 tilePos = selectedTile.transform.position;
 		if (
-		((unitPos.x + 1 == adjPos.x) && (unitPos.y == adjPos.y))
-		|| ((unitPos.y + 1 == adjPos.y) && (unitPos.x == adjPos.x))
-		|| ((unitPos.x - 1 == adjPos.x) && (unitPos.y == adjPos.y))
-		|| ((unitPos.y - 1 == adjPos.y) && (unitPos.x == adjPos.x))
+			((Mathf.Round(unitPos.x + 1) == Mathf.Round(adjPos.x)) && (unitPos.y == adjPos.y))
+			|| ((Mathf.Round(unitPos.y + 1) == Mathf.Round(adjPos.y)) && (unitPos.x == adjPos.x))
+			|| ((Mathf.Round(unitPos.x - 1) == Mathf.Round(adjPos.x)) && (unitPos.y == adjPos.y))
+			|| ((Mathf.Round(unitPos.y - 1) == Mathf.Round(adjPos.y)) && (unitPos.x == adjPos.x))
 			)
 		{
 			return true;

@@ -9,12 +9,10 @@ public class Building : Tile {
 	public BuildingType type = BuildingType.Building;
 	public Owner ownership = Owner.Null;
 	public int captureTime = 20;
-<<<<<<< HEAD
-	public bool selected = false;
-=======
 	public Material player1Material;
 	public Material player2Material;
 	public Material defaultMaterial;
+
 	void Update() {
 		if (ownership == Owner.Player1) {
 			gameObject.GetComponent<SpriteRenderer>().material = player1Material;
@@ -25,8 +23,8 @@ public class Building : Tile {
 				gameObject.GetComponent<SpriteRenderer>().material = defaultMaterial;
 		}
 		originRaycast = Physics2D.Raycast (new Vector3 (transform.position.x, transform.position.y, transform.position.z), new Vector3 (0, 0, -1), 1000f, layerMask);
-		Debug.DrawRay (new Vector3 (transform.position.x, transform.position.y, transform.position.z), new Vector3 (0, 0, -1));
-		Debug.Log (originRaycast.collider);
+		//Debug.DrawRay (new Vector3 (transform.position.x, transform.position.y, transform.position.z), new Vector3 (0, 0, -1));
+		//Debug.Log (originRaycast.collider);
 		if (captureTime <= 0) {
 
 			if (originRaycast.collider != null && originRaycast.collider.CompareTag("UnitPiece")) {
@@ -37,7 +35,6 @@ public class Building : Tile {
 			captureTime = 20;
 		}
 	}
->>>>>>> refs/remotes/origin/master
 }
 
 
