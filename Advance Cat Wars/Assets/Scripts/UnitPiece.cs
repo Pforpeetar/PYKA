@@ -2,8 +2,7 @@
 using System.Collections;
 
 public class UnitPiece : MonoBehaviour {
-	public bool finishedMovement = false;
-	public bool finishedAttack = false;
+	public bool finished = false;
 	//sorry
 	public bool selected = false;
 	public int maxUnitSize = 10;

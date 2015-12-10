@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour {
 	public Material selectedMaterial;
 	//Default sprite material
 	public Material defaultMaterial;
+	//Finished material to signal that a unit is finished.
+	public Material finishMaterial;
 
 	private UnitState curUnitState = UnitState.Start;
 
@@ -25,7 +27,7 @@ public class PlayerController : MonoBehaviour {
 	//Check to see if a unit or tile is currently selected.
 	private bool unitSelected = false;
 	private bool tileSelected = false;
-
+	private bool enemySelected = false;
 	//Current selected objects
 	private UnitPiece selectedUnit;
 	private UnitPiece selectedEnemy;
@@ -64,8 +66,11 @@ public class PlayerController : MonoBehaviour {
 		if (startPhase) {
 			selectUnit ();
 		}
-		if (movementPhase) {
-			selectTile ();
+		if (curUnitState == UnitState.Move) {
+			selectTile();
+		}
+		if (curUnitState == UnitState.Attack) {
+			selectEnemyUnit();
 		}
 		//cameraMovement ();
 	}
@@ -89,9 +94,21 @@ public class PlayerController : MonoBehaviour {
 			if (originRaycast.collider.gameObject.GetComponent<UnitPiece>().ownership.Equals(GameManager.currentPlayer)) {
 				selectedUnit = originRaycast.collider.gameObject.GetComponent<UnitPiece> ();
 			}
-			if (originRaycast.collider.gameObject.GetComponent<UnitPiece>().ownership.Equals(GameManager.opposingPlayer) && attackPhase) {
-				selectedEnemy = originRaycast.collider.gameObject.GetComponent<UnitPiece> ();
-				selectedEnemy.GetComponent<SpriteRenderer> ().material = selectedMaterial;
+		}
+	}
+
+	void selectEnemyUnit() {
+		if (Input.GetMouseButtonDown (0)) {
+			if (originRaycast.collider != null && originRaycast.collider.CompareTag ("UnitPiece")) {
+				if (originRaycast.collider.gameObject.GetComponent<UnitPiece>().ownership.Equals(GameManager.opposingPlayer)) {
+					selectedEnemy = originRaycast.collider.gameObject.GetComponent<UnitPiece> ();
+					if (checkAdjacentRaycast(selectedUnit.transform.position, selectedEnemy.transform.position)) {
+						selectedEnemy.GetComponent<SpriteRenderer> ().material = selectedMaterial;
+						enemySelected = true;
+					} else {
+						selectedEnemy = null;
+					}
+				}
 			}
 		}
 	}
@@ -100,7 +117,7 @@ public class PlayerController : MonoBehaviour {
 		//Selecting logic
 		if (Input.GetMouseButtonDown (0)) {
 			//Debug.Log(originRaycast.collider);
-			if (selectedUnit != null && selectedUnit.ownership.Equals(GameManager.currentPlayer)) {
+			if (selectedUnit != null && selectedUnit.ownership.Equals(GameManager.currentPlayer) && !selectedUnit.finished) {
 				if(!unitSelected) {
 					if (originRaycast.collider != null && originRaycast.collider.CompareTag ("UnitPiece")) {
 						selectedUnit.selected = true;
@@ -165,6 +182,16 @@ public class PlayerController : MonoBehaviour {
 		}
 	}
 
+	void reset() {
+		selectedUnit.finished = true;
+		selectedUnit.GetComponent<SpriteRenderer> ().material = finishMaterial;
+		unitSelected = false;
+		tileSelected = false;
+		startPhase = true;
+		attackPhase = false;
+		curUnitState = UnitState.Start;
+	}
+
 	void switchTurn() {
 		if (GameManager.currentPlayer.Equals(Owner.Player1)) {
 			GameManager.currentPlayer = Owner.Player2;
@@ -174,17 +201,22 @@ public class PlayerController : MonoBehaviour {
 			GameManager.currentPlayer = Owner.Player1;
 			GameManager.opposingPlayer = Owner.Player2;
 		}
-		unitSelected = false;
-		tileSelected = false;
-		startPhase = true;
-		attackPhase = false;
-		selectedUnit.finishedAttack = false;
-		selectedUnit.finishedMovement = false;
-		selectedUnit.GetComponent<SpriteRenderer> ().material = defaultMaterial;
-		movementPhase = false;
-		selectedUnit = null;
-		selectedTile = null;
+		reset ();
+		foreach (GameObject u in GameObject.FindGameObjectsWithTag("UnitPiece")) {
+			u.GetComponent<UnitPiece>().finished = false;
+			u.GetComponent<SpriteRenderer>().material = defaultMaterial;
+		}
+		selectedUnit.finished = false;	
 		curUnitState = UnitState.Start;
+	}
+
+	//May break if isn't checked properly
+	void toggleTile() {
+		selectedTile.GetComponent<SpriteRenderer> ().material = defaultMaterial;
+	}
+
+	void toggleEnemy() {
+		selectedEnemy.GetComponent<SpriteRenderer> ().material = defaultMaterial;
 	}
 
 	//text for the score
@@ -194,47 +226,62 @@ public class PlayerController : MonoBehaviour {
 		//make 4 buttons
 		//make methods to toggle visiblity
 		if (unitSelected) {
+			pos = Camera.main.WorldToScreenPoint (selectedUnit.transform.position);
+			GUI.Label (new Rect (pos.x, pos.y - 25, 100, 100), "Health: " + selectedUnit.unitSize);
+
 			if (curUnitState == UnitState.Start) {
-				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2, Screen.width / 4, Screen.height / 20), "Start Turn")) {
+				if (GUI.Button (new Rect (pos.x, pos.y, Screen.width / 4, Screen.height / 20), "Start Move")) {
 					curUnitState = UnitState.Move;
 				}
-				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2 + 25, Screen.width / 4, Screen.height / 20), "Cancel")) {
+				if (GUI.Button (new Rect (pos.x, pos.y + 25, Screen.width / 4, Screen.height / 20), "Cancel")) {
 					unitSelected = false;
 					selectedUnit.GetComponent<SpriteRenderer> ().material = defaultMaterial;
 					selectedUnit = null;
 				}
 			}
 			if (curUnitState == UnitState.Move) {
-				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2, Screen.width / 4, Screen.height / 20), "Start Move")) {
+				if (GUI.Button (new Rect (pos.x, pos.y, Screen.width / 4, Screen.height / 20), "Next: Attack")) {
 					curUnitState = UnitState.Attack;
 				}
+
+				if (tileSelected) {
+					if (GUI.Button (new Rect (pos.x, pos.y + 25, Screen.width / 4, Screen.height / 20), "Okay")) {
+						selectedUnit.transform.position = new Vector3(selectedTile.transform.position.x, selectedTile.transform.position.y, selectedUnit.transform.position.z);
+						curUnitState = UnitState.Attack;
+						toggleTile();
+					}
+				}
+
 			}
 			if (curUnitState == UnitState.Attack) {
-				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2, Screen.width / 4, Screen.height / 20), "Start Attack")) {
+				if (GUI.Button (new Rect (pos.x, pos.y, Screen.width / 4, Screen.height / 20), "Next: End")) {
 					curUnitState = UnitState.End;
+				}
+				if (enemySelected) {
+					if (GUI.Button (new Rect (pos.x, pos.y + 25, Screen.width / 4, Screen.height / 20), "Okay")) {
+						selectedEnemy.unitSize -= 5;
+						curUnitState = UnitState.End;
+						toggleEnemy();
+					}
 				}
 			}
 
 			if (curUnitState == UnitState.End) {
-				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2, Screen.width / 4, Screen.height / 20), "End Unit Turn")) {
-					switchTurn();
+				if (GUI.Button (new Rect (pos.x, pos.y, Screen.width / 4, Screen.height / 20), "End Unit Turn")) {
+					reset ();
 				}
 			}
 		}
 
-		if (selectedUnit != null) {
-			pos = Camera.main.WorldToScreenPoint (selectedUnit.transform.position);
-		}
-
 		GUI.Label (new Rect (Screen.width/2, Screen.height/12, 100, 100), "Turn: " + GameManager.currentPlayer.ToString());
 
-		/*
-		if (GUI.Button (new Rect(Screen.width / 1.25f, Screen.height / 1.25f, Screen.width/4, Screen.height/20),"EndTurn")) {
 
+		if (GUI.Button (new Rect(0, 0, Screen.width/4, Screen.height/20), "End Turn")) {
+			switchTurn();
 		}
 
 
-
+		/*
 		if (unitSelected) {
 			GUI.Label (new Rect (pos.x, pos.y - 25, 100, 100), "Health: " + selectedUnit.unitSize);
 			if (GUI.Button (new Rect(pos.x, pos.y + 50, Screen.width/4, Screen.height/20), "Cancel")) {
