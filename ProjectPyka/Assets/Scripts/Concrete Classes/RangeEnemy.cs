@@ -7,9 +7,11 @@ public class RangeEnemy : Enemy {
 	public float knockback = 5000;
 	public GameObject refBullet;
 	public float COOLDOWNTIME = 1f;
+	public float range = 7;
 	private float timeSinceLastFired = 0f;
+	public float stutterFactor = 500;
 	private Transform playerTransform;
-	private bool playerInSight = false;
+	public bool chaseTarget = false;
 	// Use this for initialization
 	void Start () {
 		EnemyStart ();
@@ -18,42 +20,56 @@ public class RangeEnemy : Enemy {
 	
 	// Update is called once per frame
 	void Update () {
-		EnemyUpdate ();
-		EnemyMovement ();
+		if (target != null) {
+			EnemyUpdate ();
+			EnemyMovement ();
 		
-		Vector3 targetPos = Camera.main.WorldToScreenPoint (target.transform.position);
+			Vector3 targetPos = Camera.main.WorldToScreenPoint (target.transform.position);
 		
-		Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
-		targetPos.x = targetPos.x - objectPos.x;
-		targetPos.y = targetPos.y - objectPos.y;
+			Vector3 objectPos = Camera.main.WorldToScreenPoint (transform.position);
+			targetPos.x = targetPos.x - objectPos.x;
+			targetPos.y = targetPos.y - objectPos.y;
 		
-		float angle = Mathf.Atan2(targetPos.y, targetPos.x) * Mathf.Rad2Deg;
-		transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle+270));
-		rangedUpdate ();
+			float angle = Mathf.Atan2 (targetPos.y, targetPos.x) * Mathf.Rad2Deg;
+			transform.rotation = Quaternion.Euler (new Vector3 (0, 0, angle + 270));
+			rangedUpdate ();
+		}
 	}
 
+	void Chasing ()
+	{
+		float Xdif = target.position.x - transform.position.x;
+		float Ydif = target.position.y - transform.position.y;
+		Vector2 Playerdirection = new Vector2 (Xdif, Ydif);
+		r.velocity = (Playerdirection.normalized * movementSpeed);
+		r.AddForce(new Vector2(Random.Range(-stutterFactor, stutterFactor), Random.Range(-stutterFactor, stutterFactor)));
+	}
+	
 	public override void EnemyMovement ()
 	{
-		//Stationary
+		if (target != null && chaseTarget) {
+			Chasing ();
+		} else {
+			r.velocity = new Vector2(0, 0);
+		}
+	}
+
+	bool findTarget() {
+		playerTransform = GameObject.FindGameObjectWithTag ("Player").gameObject.transform;
+		Vector3 distance = playerTransform.position - transform.position;
+		
+		if (Mathf.Abs (distance.x) < range  && Mathf.Abs(distance.y) < range) {
+			return true;
+		}
+
+		return false;
 	}
 
 	void rangedUpdate() {
-		playerTransform = GameObject.FindGameObjectWithTag ("Player").gameObject.transform;
-		Vector3 distance = playerTransform.position - transform.position;
-		Debug.Log("X: " + distance.x);
-		Debug.Log("Y: " + distance.y);
-		if (Mathf.Abs (distance.x) < 5  && Mathf.Abs(distance.y) < 5) {
-			playerInSight = true;
 
-		} else {
-			playerInSight = false;
-		}
-		if (playerInSight == true && canFire ()) {
-			//Debug.Log("stun: " + stunned);
-			//Debug.Log("IN SIGHT!");
+		if (findTarget () && canFire ()) {
 			rangedAttack ();
 		}
-
 	}
 	
 	private bool canFire()

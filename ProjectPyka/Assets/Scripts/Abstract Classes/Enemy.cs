@@ -3,7 +3,6 @@ using System.Collections;
 
 public abstract class Enemy : Entity {
 	public int level = 1;
-	public int scoreBounty = 10;
 	protected Transform target;
 
 	// Use this for initialization
@@ -13,7 +12,9 @@ public abstract class Enemy : Entity {
 
 	protected void EnemyStart() {
 		EntityStart ();
-		target = Utilities.getPlayerTransform ();
+		if (Utilities.getPlayerTransform() != null) {
+			target = Utilities.getPlayerTransform ();
+		}
 	}
 	
 	// Update is called once per frame

@@ -15,10 +15,6 @@ public class SpreadProjectile : ProjectileMovement {
 
 		GameObject clone = (GameObject) Instantiate(bullet, transform.position + dir, Quaternion.identity);  
 		//clones prefab
-
-
-		float angle = Mathf.Atan2(dir.y, dir.x);
-
 		clone.GetComponent<Rigidbody2D> ().velocity = new Vector3 ((dir.x + Random.Range(-randomFactor, randomFactor)) * speed, 
 		(dir.y + Random.Range(-randomFactor, randomFactor)) * speed); 
 		float bulletSpreadFactor = .05f;
