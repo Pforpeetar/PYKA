@@ -15,7 +15,7 @@ public class HUD : MonoBehaviour {
 
 	void OnGUI() {
 		//click start turn call gamemanager.startturn
-		if (GameManager.turn.Equals (Owner.Null)) {
+		if (GameManager.currentPlayer.Equals (Owner.Null)) {
 			//display next player's name and button to start turn;
 
 		}

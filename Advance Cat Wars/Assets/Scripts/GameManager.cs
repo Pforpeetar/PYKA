@@ -9,15 +9,15 @@ public enum BuildingType {
 
 public static class GameManager {
 	public static Player[] playerArray;
-	public static Owner turn = Owner.Null;
-	
+	public static Owner currentPlayer = Owner.Player1;
+	public static Owner opposingPlayer = Owner.Player2;
 	public static void startGame() {
-		turn = Owner.Player1;
+		currentPlayer = Owner.Player1;
 	}
 
 	public static void intermediateTurn() {
 		//This is a black screen before next players turn. 
-		turn = Owner.Null;
+		currentPlayer = Owner.Null;
 	}
 
 	public static void startTurn() {

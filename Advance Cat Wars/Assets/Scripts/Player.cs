@@ -13,7 +13,7 @@ public class Player : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
-		if (GameManager.turn.Equals (playerEnum)) {
+		if (GameManager.currentPlayer.Equals (playerEnum)) {
 			//do this
 		}
 	}

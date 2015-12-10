@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class UnitPiece : MonoBehaviour {
+	public bool finishedMovement = false;
+	public bool finishedAttack = false;
+	//sorry
 	public bool selected = false;
 	public int maxUnitSize = 10;
 	public int unitSize = 0;
@@ -15,6 +18,13 @@ public class UnitPiece : MonoBehaviour {
 	void Start() {
 		unitSize = maxUnitSize;
 	}
+
+	void Update() {
+		if (unitSize <= 0) {
+			Destroy(gameObject);
+		}
+	}
+
 	public bool isOnBuilding() {
 		// raycast down...
 		//   if building, return true
