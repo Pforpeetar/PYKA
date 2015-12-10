@@ -198,20 +198,25 @@ public class PlayerController : MonoBehaviour {
 				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2, Screen.width / 4, Screen.height / 20), "Start Turn")) {
 					curUnitState = UnitState.Move;
 				}
+				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2 + 25, Screen.width / 4, Screen.height / 20), "Cancel")) {
+					unitSelected = false;
+					selectedUnit.GetComponent<SpriteRenderer> ().material = defaultMaterial;
+					selectedUnit = null;
+				}
 			}
 			if (curUnitState == UnitState.Move) {
-				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2 + 25, Screen.width / 4, Screen.height / 20), "Start Move")) {
+				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2, Screen.width / 4, Screen.height / 20), "Start Move")) {
 					curUnitState = UnitState.Attack;
 				}
 			}
 			if (curUnitState == UnitState.Attack) {
-				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2 + 50, Screen.width / 4, Screen.height / 20), "Start Attack")) {
+				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2, Screen.width / 4, Screen.height / 20), "Start Attack")) {
 					curUnitState = UnitState.End;
 				}
 			}
 
 			if (curUnitState == UnitState.End) {
-				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2 + 100, Screen.width / 4, Screen.height / 20), "End Unit Turn")) {
+				if (GUI.Button (new Rect (Screen.width / 2, Screen.height / 2, Screen.width / 4, Screen.height / 20), "End Unit Turn")) {
 					switchTurn();
 				}
 			}
