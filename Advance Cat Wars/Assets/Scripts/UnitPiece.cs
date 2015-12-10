@@ -13,6 +13,8 @@ public class UnitPiece : MonoBehaviour {
 	public int minAttackRange = 1;
 	public int maxAttackRange = 1; 
 	public Owner ownership = Owner.Player1;
+	private RaycastHit2D originRaycast;
+	public LayerMask layerMask;
 
 	void Start() {
 		unitSize = maxUnitSize;
@@ -28,6 +30,15 @@ public class UnitPiece : MonoBehaviour {
 		// raycast down...
 		//   if building, return true
 		//   else return false
+		originRaycast = Physics2D.Raycast (new Vector3 (transform.position.x, transform.position.y, transform.position.z), new Vector3 (0, 0, 1), 1000f, layerMask);
+		if (originRaycast.collider != null && originRaycast.collider.gameObject.CompareTag("Building")) {
+			if (originRaycast.collider.gameObject.GetComponent<Building>().ownership != ownership) {
+				originRaycast.collider.gameObject.GetComponent<Building>().captureTime -= 10;
+			}
+			return true;
+		}
+
+
 		return false;
 	}
 
