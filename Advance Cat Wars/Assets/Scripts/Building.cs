@@ -9,6 +9,9 @@ public class Building : Tile {
 	public BuildingType type = BuildingType.Building;
 	public Owner ownership = Owner.Null;
 	public int captureTime = 20;
+<<<<<<< HEAD
+	public bool selected = false;
+=======
 	public Material player1Material;
 	public Material player2Material;
 	public Material defaultMaterial;
@@ -34,6 +37,7 @@ public class Building : Tile {
 			captureTime = 20;
 		}
 	}
+>>>>>>> refs/remotes/origin/master
 }
 
 

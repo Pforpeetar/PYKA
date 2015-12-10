@@ -65,7 +65,11 @@ public class PlayerController : MonoBehaviour {
 	//Method to hold all player mouse inputs and their functionality.
 	void inputCheck() {
 		rayCastCheck ();
+<<<<<<< HEAD
+		Debug.Log ("Unit Selected: " + unitSelected);
+=======
 		//Debug.Log ("Unit Selected: " + unitSelected);
+>>>>>>> refs/remotes/origin/master
 		selectUnit ();
 		if (curUnitState == UnitState.Move) {
 			selectTile();
