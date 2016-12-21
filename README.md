@@ -12,7 +12,7 @@ Run WindowsDemo.exe
 * Right click to change weapons.
 
 #### Contributors
-	* Omari Straker
+	* Kha Nguyen
 	* Peter Pham
-	* Carl Lee
-	* Travis Tran
+	* Anthony Tsang
+	* Ying Yau
